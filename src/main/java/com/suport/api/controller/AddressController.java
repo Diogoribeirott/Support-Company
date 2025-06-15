@@ -33,7 +33,7 @@ public class AddressController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Address>> findById(){
+    public ResponseEntity<List<Address>> findAll(){
          return ResponseEntity.ok().body(addressService.findAll());
     }
 
@@ -45,7 +45,7 @@ public class AddressController {
     @DeleteMapping("/{id}")
     public  ResponseEntity<Void> delete(@PathVariable Long id){
         addressService.delete(id);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
 }
