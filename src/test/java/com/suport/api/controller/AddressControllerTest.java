@@ -100,7 +100,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    @DisplayName("ListALL: return list of addreses")
+    @DisplayName("FindALL: return list of addreses")
     void findAll_ReturnListOfAddress_when_sucessful() {
 
         Address addressValidWithId = AddressTests.createAddressValidWithId();

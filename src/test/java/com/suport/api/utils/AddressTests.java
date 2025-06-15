@@ -45,4 +45,16 @@ public class AddressTests {
         );
 
     }
+    public static AddressDTO createAddressDTOValidUpdate(){
+        return new AddressDTO( 
+            "ALPHENEIROS",     
+            "4",             
+            "California",     
+            "Los Angeles",     
+            "90001",            
+            "Apt 45",           
+            "Downtown"          
+        );
+
+    }
 }
