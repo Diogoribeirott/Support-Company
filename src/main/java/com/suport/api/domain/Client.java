@@ -1,45 +1,48 @@
 package com.suport.api.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.suport.api.enums.ClientType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-@Data
-@SuperBuilder
+@Getter
+@Setter
 @Entity
-@NoArgsConstructor
-@Table(name = "Client_TB")
-public class Client {
+@SuperBuilder
+@Table(name = "clients")
+@ToString(onlyExplicitlyIncluded = true)
+public class Client extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @ToString.Include
     private String name;
 
+    @ToString.Include
     private String email;
+
     private String taxId;
     private String phone;
     
-    @CreationTimestamp
-    private LocalDateTime  CreateAt;
-    
-    @UpdateTimestamp
-    private LocalDateTime  updateAt;
-    
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinColumn(name = "address_id")
     private Address address;  
 
     @Enumerated(EnumType.STRING)
     private ClientType type;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<Task> tasks = new HashSet<>();
 }
