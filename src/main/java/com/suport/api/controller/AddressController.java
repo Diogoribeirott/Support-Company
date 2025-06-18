@@ -1,40 +1,43 @@
 package com.suport.api.controller;
 
 import com.suport.api.domain.Address;
-import com.suport.api.dtos.AddressDTO;
+import com.suport.api.dtos.request.AddressRequestDTO;
+import com.suport.api.dtos.request.ClientRequestCreateDTO;
+import com.suport.api.dtos.response.AddressResponseDTO;
+import com.suport.api.mappers.AddressMapper;
 import com.suport.api.service.AddressService;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;     
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import jakarta.validation.Valid;
-
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/addresses")
 public class AddressController {
 
-    private AddressService addressService;
+    private final AddressService addressService;
 
     public AddressController(AddressService addressService) {
         this.addressService = addressService;
     }
 
-    @Operation(
+    // =============================
+    // CREATE
+    // =============================
+     @Operation(
         summary = "Create a new address",
-        description = "Creates and persists a new address in the database",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Address data to be saved",
-            required = true
-        )
+        description = "Creates and persists a new address in the database"
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -42,26 +45,32 @@ public class AddressController {
             description = "Address created successfully",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = Address.class)
+                schema = @Schema(implementation = AddressResponseDTO.class)
             )
         ),
-        @ApiResponse(responseCode = "400",
-            description = "Invalid input data", 
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid input data",
             content = @Content
-            ),
-        @ApiResponse(responseCode = "500",
+        ),
+        @ApiResponse(
+            responseCode = "500",
             description = "Internal server error",
             content = @Content
-            )
+        )
     })
     @PostMapping
-    public ResponseEntity<Address> save(@RequestBody @Valid AddressDTO body){
-        return ResponseEntity.status(HttpStatus.CREATED).body(addressService.save(body));
+    public ResponseEntity<AddressResponseDTO> save(@RequestBody @Valid AddressRequestDTO body) {
+        AddressResponseDTO response = addressService.save(body);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // =============================
+    // READ (BY ID)
+    // =============================
     @Operation(
         summary = "Get address by ID",
-        description = "Get the address identified by the given ID"
+        description = "Returns the address identified by the given ID"
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -69,7 +78,7 @@ public class AddressController {
             description = "Address found successfully",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = Address.class)
+                schema = @Schema(implementation = AddressResponseDTO.class)
             )
         ),
         @ApiResponse(
@@ -84,21 +93,25 @@ public class AddressController {
         )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Address> findID(@PathVariable Long id){
-        return ResponseEntity.ok().body(addressService.findByIdOrThrowBadRequestException(id));
+    public ResponseEntity<AddressResponseDTO> findById(@PathVariable Long id) {
+        Address address = addressService.findByIdOrThrowBadRequestException(id);
+        return ResponseEntity.ok(AddressMapper.createAddressResponseDTO(address));
     }
 
+    // =============================
+    // READ (ALL)
+    // =============================
     @Operation(
-        summary = "Get list all address",
-        description = "Get list of all addresses in database"
+        summary = "List all addresses",
+        description = "Returns a list of all addresses in the database"
     )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "Addresses found successfully",
+            description = "Addresses retrieved successfully",
             content = @Content(
                 mediaType = "application/json",
-                array = @ArraySchema(schema = @Schema(implementation = Address.class))
+                array = @ArraySchema(schema = @Schema(implementation = AddressResponseDTO.class))
             )
         ),
         @ApiResponse(
@@ -108,14 +121,16 @@ public class AddressController {
         )
     })
     @GetMapping
-    public ResponseEntity<List<Address>> findAll(){
-        return ResponseEntity.ok().body(addressService.findAll());
+    public ResponseEntity<List<AddressResponseDTO>> findAll() {
+        return ResponseEntity.ok(addressService.findAll());
     }
 
+    // =============================
+    // UPDATE
+    // =============================
     @Operation(
-        summary = "Update an existing address by its ID",
-        description = "Updates the address identified by the given ID using the data provided in the request body (AddressDTO). " +
-                      "Returns the updated address if successful."
+        summary = "Update address by ID",
+        description = "Updates the address identified by the given ID with the data provided"
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -123,7 +138,7 @@ public class AddressController {
             description = "Address updated successfully",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = Address.class)
+                schema = @Schema(implementation = AddressResponseDTO.class)
             )
         ),
         @ApiResponse(
@@ -138,18 +153,21 @@ public class AddressController {
         )
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Address> update(@RequestBody @Valid AddressDTO body, @PathVariable Long id){
-        return ResponseEntity.ok().body(addressService.update(body, id));
+    public ResponseEntity<AddressResponseDTO> update(@RequestBody @Valid AddressRequestDTO body, @PathVariable Long id) {
+        return ResponseEntity.ok(addressService.update(body, id));
     }
 
+    // =============================
+    // DELETE
+    // =============================
     @Operation(
-        summary = "Delete an existing address by its ID",
-        description = "Delete the address identified by the given ID using the data provided and Returns the updated address if successful."
+        summary = "Delete address by ID",
+        description = "Deletes the address identified by the given ID"
     )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "204",
-            description = "Address delete successfully"
+            description = "Address deleted successfully"
         ),
         @ApiResponse(
             responseCode = "400",
@@ -163,8 +181,8 @@ public class AddressController {
         )
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        addressService.delete(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        addressService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

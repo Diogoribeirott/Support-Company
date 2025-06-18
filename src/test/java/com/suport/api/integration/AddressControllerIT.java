@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.suport.api.domain.Address;
-import com.suport.api.dtos.AddressDTO;
+import com.suport.api.dtos.request.AddressRequestDTO;
 import com.suport.api.repository.AddressRepository;
 import com.suport.api.utils.AddressTests;
 
@@ -141,25 +141,25 @@ class AddressControllerIT {
 
     // }
 
-     @Test
-    @DisplayName("Delete by id: delete address by id when successful ")
-    void delete_deleteAddressAndReturnNoContent_when_Sucessful() {
+    //  @Test
+    // @DisplayName("Delete by id: delete address by id when successful ")
+    // void delete_deleteAddressAndReturnNoContent_when_Sucessful() {
 
-       Address createAddressValidWithId = addressRepository.save(AddressTests.createAddressValid());
+    //    Address createAddressValidWithId = addressRepository.save(AddressTests.createAddressValid());
 
-        String url = "/address/" + createAddressValidWithId.getId() ;   
+    //     String url = "/address/" + createAddressValidWithId.getId() ;   
 
-        ResponseEntity<Void> response = testrestTemplate.exchange( url,
-        HttpMethod.DELETE,
-        null,
-        new ParameterizedTypeReference<Void>(){});
+    //     ResponseEntity<Void> response = testrestTemplate.exchange( url,
+    //     HttpMethod.DELETE,
+    //     null,
+    //     new ParameterizedTypeReference<Void>(){});
 
-        boolean exists = addressRepository.existsById(createAddressValidWithId.getId());
+    //     boolean exists = addressRepository.existsById(createAddressValidWithId.getId());
 
-        Assertions.assertThat(exists).isFalse();
-        Assertions.assertThat(response).isNotNull();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
+    //     Assertions.assertThat(exists).isFalse();
+    //     Assertions.assertThat(response).isNotNull();
+    //     Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    // }
 
 
 

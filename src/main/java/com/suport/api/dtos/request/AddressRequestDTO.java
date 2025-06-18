@@ -1,11 +1,11 @@
-package com.suport.api.dtos;
+package com.suport.api.dtos.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record AddressDTO(
+public record AddressRequestDTO(
 
     @Size(min = 3, message = "Street must have at least 3 characters")
     @Schema(description = "Street name", example = "Main Street")

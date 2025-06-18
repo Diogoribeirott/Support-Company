@@ -1,4 +1,4 @@
-package com.suport.api.domain;
+package com.suport.api.enums;
 
 public enum TaskPriority {
     LOW,

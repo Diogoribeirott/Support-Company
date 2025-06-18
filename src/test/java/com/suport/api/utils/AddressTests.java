@@ -1,7 +1,7 @@
 package com.suport.api.utils;
 
 import com.suport.api.domain.Address;
-import com.suport.api.dtos.AddressDTO;
+import com.suport.api.dtos.request.AddressRequestDTO;
 
 public class AddressTests {
 
@@ -33,8 +33,8 @@ public class AddressTests {
     }
     
 
-    public static AddressDTO createAddressDTOValid(){
-        return new AddressDTO( 
+    public static AddressRequestDTO createAddressDTOValid(){
+        return new AddressRequestDTO( 
             "Main Street",     
             "123",             
             "California",     
@@ -45,8 +45,8 @@ public class AddressTests {
         );
 
     }
-    public static AddressDTO createAddressDTOValidUpdate(){
-        return new AddressDTO( 
+    public static AddressRequestDTO createAddressDTOValidUpdate(){
+        return new AddressRequestDTO( 
             "ALPHENEIROS",     
             "4",             
             "California",     

@@ -1,10 +1,16 @@
 package com.suport.api.domain;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.suport.api.enums.TaskPriority;
+import com.suport.api.enums.TaskStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,17 +24,20 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @Entity
-@SuperBuilder
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tasks" )
-public class Task extends BaseEntity{
+public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,5 +67,11 @@ public class Task extends BaseEntity{
     )
     @JsonManagedReference
     private Set<Technician> technicians = new HashSet<>();
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 }

@@ -1,25 +1,32 @@
 package com.suport.api.domain;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.suport.api.enums.ClientType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @Entity
-@SuperBuilder
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "clients")
 @ToString(onlyExplicitlyIncluded = true)
-public class Client extends BaseEntity {
-
+public class Client {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,4 +52,10 @@ public class Client extends BaseEntity {
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Task> tasks = new HashSet<>();
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

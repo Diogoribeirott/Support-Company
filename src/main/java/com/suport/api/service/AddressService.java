@@ -1,52 +1,72 @@
 package com.suport.api.service;
 
 import com.suport.api.domain.Address;
-import com.suport.api.dtos.AddressDTO;
+import com.suport.api.dtos.request.AddressRequestDTO;
+import com.suport.api.dtos.response.AddressResponseDTO;
 import com.suport.api.exceptions.BadRequestException;
+import com.suport.api.mappers.AddressMapper;
 import com.suport.api.repository.AddressRepository;
-
-import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class AddressService {
 
-    private AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
 
     public AddressService(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
     }
 
+    // =============================
+    // CREATE
+    // =============================
     @Transactional
-    public Address save(AddressDTO addressDTO){
+    public AddressResponseDTO save(AddressRequestDTO dto) {
         Address address = new Address();
-        BeanUtils.copyProperties(addressDTO, address);
-       return addressRepository.save(address);
+        BeanUtils.copyProperties(dto, address);
+
+        Address saved = addressRepository.save(address);
+        return AddressMapper.createAddressResponseDTO(saved);
+    }
+
+    // =============================
+    // READ
+    // =============================
+    public List<AddressResponseDTO> findAll() {
+        return addressRepository.findAll()
+                .stream()
+                .map(AddressMapper::createAddressResponseDTO)
+                .toList();
     }
 
     public Address findByIdOrThrowBadRequestException(Long id) {
-      return addressRepository.findById(id).orElseThrow(
-        () -> new BadRequestException("Address not found"));
+        return addressRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("No address found with the provided ID: " + id));
     }
 
-    public List<Address> findAll(){
-        return addressRepository.findAll();
-    }
-
+    // =============================
+    // UPDATE
+    // =============================
     @Transactional
-    public Address update(AddressDTO body, Long id){
+    public AddressResponseDTO update(AddressRequestDTO dto, Long id) {
         Address address = findByIdOrThrowBadRequestException(id);
-        BeanUtils.copyProperties(body, address);
-        return addressRepository.save(address);
+        BeanUtils.copyProperties(dto, address);
+
+        Address updated = addressRepository.save(address);
+        return AddressMapper.createAddressResponseDTO(updated);
     }
 
+    // =============================
+    // DELETE
+    // =============================
     @Transactional
-    public void delete(Long id){
+    public void deleteById(Long id) {
         findByIdOrThrowBadRequestException(id);
         addressRepository.deleteById(id);
     }
-
 }

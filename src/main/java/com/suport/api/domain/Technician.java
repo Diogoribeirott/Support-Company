@@ -1,7 +1,11 @@
 package com.suport.api.domain;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -12,19 +16,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @Entity
-@SuperBuilder
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "technicians" )
 @ToString(onlyExplicitlyIncluded = true)
-public class Technician extends BaseEntity {
+public class Technician  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +39,18 @@ public class Technician extends BaseEntity {
 
     @ToString.Include
     private String name;
+    
     private String phone;
 
     @Builder.Default
     @ManyToMany(mappedBy = "technicians", fetch = FetchType.LAZY)
     @JsonBackReference
     private Set<Task> tasks = new HashSet<>();
+
+     @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 }
