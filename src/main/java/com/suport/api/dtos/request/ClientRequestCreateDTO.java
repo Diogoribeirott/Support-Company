@@ -35,7 +35,7 @@ public record ClientRequestCreateDTO(
     AddressRequestDTO address,
 
     @NotNull(message = "ClientType cannot be null.")
-    @Schema(description = "Type of client: INDIVIDUAL or COMPANY", example = "INDIVIDUAL")
+    @Schema(description = "Type of client: INDIVIDUAL or BUSINESS", example = "INDIVIDUAL")
     ClientType type
 ) {
 

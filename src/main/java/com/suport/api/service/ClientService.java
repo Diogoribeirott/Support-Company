@@ -45,6 +45,8 @@ public class ClientService {
     // =============================
     // READ
     // =============================
+    
+    @Transactional(readOnly = true)
     public List<ClientResponseDTO> findAll() {
         return clientRepository.findAll()
             .stream()
@@ -52,6 +54,7 @@ public class ClientService {
             .toList();
     }
 
+    @Transactional(readOnly = true)
     public Client findByIdOrThrowBadRequestException(Long id) {
         return clientRepository.findById(id).orElseThrow(
             () -> new BadRequestException("No client found with the provided ID: " + id)

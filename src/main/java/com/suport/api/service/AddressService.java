@@ -37,13 +37,15 @@ public class AddressService {
     // =============================
     // READ
     // =============================
+    @Transactional(readOnly = true)
     public List<AddressResponseDTO> findAll() {
         return addressRepository.findAll()
                 .stream()
                 .map(AddressMapper::createAddressResponseDTO)
                 .toList();
     }
-
+    
+    @Transactional(readOnly = true)
     public Address findByIdOrThrowBadRequestException(Long id) {
         return addressRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("No address found with the provided ID: " + id));
