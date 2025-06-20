@@ -2,8 +2,9 @@ package com.suport.api.utils;
 
 import com.suport.api.domain.Address;
 import com.suport.api.dtos.request.AddressRequestDTO;
+import com.suport.api.dtos.response.AddressResponseDTO;
 
-public class AddressTests {
+public class AddressModelTests {
 
     public static Address createAddressValid(){
         return Address.builder()
@@ -33,7 +34,7 @@ public class AddressTests {
     }
     
 
-    public static AddressRequestDTO createAddressDTOValid(){
+    public static AddressRequestDTO createAddressResquestDTOValid(){
         return new AddressRequestDTO( 
             "Main Street",     
             "123",             
@@ -55,6 +56,16 @@ public class AddressTests {
             "Apt 45",           
             "Downtown"          
         );
+
+    }
+
+     public static AddressResponseDTO createAddressResponseDTO(){
+        return new AddressResponseDTO(
+            1l, 
+            "Main Street", 
+            "123", 
+            "SP", 
+            "Los Angeles");
 
     }
 }

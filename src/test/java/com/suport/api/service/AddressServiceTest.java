@@ -20,7 +20,7 @@ import com.suport.api.domain.Address;
 import com.suport.api.dtos.request.AddressRequestDTO;
 import com.suport.api.exceptions.BadRequestException;
 import com.suport.api.repository.AddressRepository;
-import com.suport.api.utils.AddressTests;
+import com.suport.api.utils.AddressModelTests;
 
 @ExtendWith(SpringExtension.class)
 public class AddressServiceTest {

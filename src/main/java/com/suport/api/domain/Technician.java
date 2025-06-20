@@ -18,6 +18,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "technicians" )
 @ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Technician  {
 
     @Id
@@ -38,8 +40,10 @@ public class Technician  {
     private Long id;
 
     @ToString.Include
+    @EqualsAndHashCode.Include
     private String name;
     
+    @EqualsAndHashCode.Include
     private String phone;
 
     @Builder.Default
@@ -47,7 +51,7 @@ public class Technician  {
     @JsonBackReference
     private Set<Task> tasks = new HashSet<>();
 
-     @CreationTimestamp
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
