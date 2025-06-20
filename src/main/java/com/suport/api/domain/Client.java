@@ -41,7 +41,6 @@ public class Client {
     private String phone;
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     @JoinColumn(name = "address_id")
     private Address address;  
 
@@ -50,7 +49,6 @@ public class Client {
 
     @Builder.Default
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
-    @JsonManagedReference
     private Set<Task> tasks = new HashSet<>();
 
     @CreationTimestamp

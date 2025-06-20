@@ -27,9 +27,6 @@ public record ClientResponseDTO(
     AddressResponseDTO address,
 
     @Schema(description = "Type of client: INDIVIDUAL or COMPANY", example = "INDIVIDUAL")
-    ClientType type,
-
-    @Schema(description = "List of Task IDs associated with the client", example = "[101, 102]")
-    Set<Long> tasksIds
+    ClientType type
 
 ){}

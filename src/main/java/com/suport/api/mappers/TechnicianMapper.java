@@ -12,11 +12,7 @@ public class TechnicianMapper {
       return  new  TechnicianResponseDTO(
             technician.getId(),
             technician.getName(),
-            technician.getPhone(),
-            technician.getTasks().stream()
-            .map(Task::getId)
-            .collect(Collectors.toSet())
-         
+            technician.getPhone()
       );
     }
 

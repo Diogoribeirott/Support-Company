@@ -80,8 +80,7 @@ public class ClientModelTest {
             "12.345.678/0001-00",
             "(00) 0000-0000",
             AddressModelTests.createAddressResponseDTO() ,
-            ClientType.BUSINESS,
-            Set.of(101L, 102L));
+            ClientType.BUSINESS);
     }
 
 }

@@ -55,7 +55,6 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
-    @JsonBackReference
     private Client client;
 
     @Builder.Default
@@ -65,7 +64,6 @@ public class Task {
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "technician_id")
     )
-    @JsonManagedReference
     private Set<Technician> technicians = new HashSet<>();
 
     @CreationTimestamp

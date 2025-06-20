@@ -13,9 +13,7 @@ public record TechnicianResponseDTO(
     String name,
     
     @Schema(description = "Phone number", example = "(00) 0000-0000")
-    String phone,
+    String phone
 
-    @Schema(description = "List of Task IDs associated with the Technician", example = "[101, 102]")
-    Set<Long> tasksIds
 ) {
 } 

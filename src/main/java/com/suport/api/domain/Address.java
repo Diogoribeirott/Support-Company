@@ -35,6 +35,5 @@ public class Address {
 
     @OneToOne(mappedBy = "address", fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
-    @JsonBackReference
     private Client client;
 }

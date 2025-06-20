@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.suport.api.domain.Address;
 import com.suport.api.dtos.request.AddressRequestDTO;
+import com.suport.api.dtos.response.AddressResponseDTO;
 import com.suport.api.repository.AddressRepository;
 import com.suport.api.utils.AddressModelTests;
 
@@ -26,7 +27,7 @@ import com.suport.api.utils.AddressModelTests;
 class AddressControllerIT {
 
     @Autowired
-    private TestRestTemplate testrestTemplate;
+    private TestRestTemplate testRestTemplate;
 
     @Autowired
     private AddressRepository addressRepository;
@@ -35,132 +36,124 @@ class AddressControllerIT {
     private int port;
 
     @Test
-    @DisplayName("FindALL: return list of addreses")
-    void findAll_ReturnListOfAddress_when_sucessful() {
+    @DisplayName("FindALL: return list of addresses")
+    void findAll_ReturnListOfAddress_when_successful() {
+        Address savedAddress = addressRepository.save(AddressModelTests.createAddressValid());
 
-        Address addressValid = addressRepository.save(AddressTests.createAddressValid());
-
-        ResponseEntity<List<Address>> response = testrestTemplate.exchange("/address",HttpMethod.GET,null, new ParameterizedTypeReference<List<Address>>(){});
+        ResponseEntity<List<AddressResponseDTO>> response = testRestTemplate.exchange(
+                "/addresses",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {}
+        );
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        List<Address> listAddresses = response.getBody();
-
-        Assertions.assertThat(listAddresses).isNotEmpty();
-        Assertions.assertThat(listAddresses.get(0).getComplement()).isEqualTo(addressValid.getComplement());
-
+        List<AddressResponseDTO> addresses = response.getBody();
+        Assertions.assertThat(addresses).isNotEmpty();
+        Assertions.assertThat(addresses.get(0).city()).isEqualTo(savedAddress.getCity());
     }
 
     @Test
-    @DisplayName("Find by id: find address by id when successful ")
-    void findById_ReturnAnAddress_when_sucessful() {
-        Address addressValid = addressRepository.save(AddressTests.createAddressValid());
+    @DisplayName("Find by id: find address by id when successful")
+    void findById_ReturnAnAddress_when_successful() {
+        Address savedAddress = addressRepository.save(AddressModelTests.createAddressValid());
 
-        String url = "/address/"+ addressValid.getId();
+        String url = "/addresses/" + savedAddress.getId();
 
-       ResponseEntity<Address> response = testrestTemplate.exchange( url,
-        HttpMethod.GET,
-        null,
-        Address.class);
+        ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                AddressResponseDTO.class
+        );
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        Address address = response.getBody();
-
+        AddressResponseDTO address = response.getBody();
         Assertions.assertThat(address).isNotNull();
-        Assertions.assertThat(address.getId()).isNotNull();
-        Assertions.assertThat(address.getStreet()).isEqualTo(addressValid.getStreet());
-        Assertions.assertThat(address.getNumber()).isEqualTo(addressValid.getNumber());
-        Assertions.assertThat(address.getCity()).isEqualTo(addressValid.getCity());
-        Assertions.assertThat(address.getState()).isEqualTo(addressValid.getState());
-        Assertions.assertThat(address.getPostalCode()).isEqualTo(addressValid.getPostalCode());
-        Assertions.assertThat(address.getComplement()).isEqualTo(addressValid.getComplement());
-        Assertions.assertThat(address.getDistrict()).isEqualTo(addressValid.getDistrict());
-
+        Assertions.assertThat(address.id()).isNotNull();
+        Assertions.assertThat(address.street()).isEqualTo(savedAddress.getStreet());
+        Assertions.assertThat(address.number()).isEqualTo(savedAddress.getNumber());
+        Assertions.assertThat(address.city()).isEqualTo(savedAddress.getCity());
+        Assertions.assertThat(address.state()).isEqualTo(savedAddress.getState());
     }
 
     @Test
-    @DisplayName("when id does not exist: throw bad request exception ")
-    void findById_ReturnthrowBadRequestException_when_idNotExits() {
+    @DisplayName("When id does not exist: throw bad request exception")
+    void findById_ReturnThrowBadRequestException_when_idNotExists() {
+        String url = "/addresses/9999999";
 
-        String url = "/address/9999999";
-
-        ResponseEntity<Address> response = testrestTemplate.exchange( url,
-        HttpMethod.GET,
-        null,
-         new ParameterizedTypeReference<Address>(){});
+        ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {}
+        );
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-
     }
-
 
     @Test
     @DisplayName("Save: save addressDTO and return an address")
-    void save_returnAddress_when_sucessfull() {
+    void save_ReturnAddress_when_successful() {
+        AddressRequestDTO requestDTO = AddressModelTests.createAddressResquestDTOValid();
 
-        AddressDTO addressDTOValid = AddressTests.createAddressDTOValid();
-
-        String url = "/address";    
-
-        ResponseEntity<Address> response = testrestTemplate.exchange( url,
-        HttpMethod.POST,
-        new HttpEntity<>(addressDTOValid),
-        new ParameterizedTypeReference<Address>(){});
+        ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
+                "/addresses",
+                HttpMethod.POST,
+                new HttpEntity<>(requestDTO),
+                new ParameterizedTypeReference<>() {}
+        );
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        Address address = response.getBody();
-
-        Assertions.assertThat(address).isNotNull();
-        Assertions.assertThat(address.getId()).isNotNull();
-      
+        AddressResponseDTO savedAddress = response.getBody();
+        Assertions.assertThat(savedAddress).isNotNull();
+        Assertions.assertThat(savedAddress.id()).isNotNull();
     }
 
     @Test
     @DisplayName("Update: update address with addressDTO and long id, return an address")
-    void update_returnAddress_when_sucessfull() {
+    void update_ReturnAddress_when_successful() {
+        Address existingAddress = addressRepository.save(AddressModelTests.createAddressValid());
+        existingAddress.setStreet("alpheneiros");
 
-        Address createAddressValidWithId = addressRepository.save(AddressTests.createAddressValid());
-        createAddressValidWithId.setStreet("alpheneiros");
+        String url = "/addresses/" + existingAddress.getId();
 
-        String url = "/address/" + createAddressValidWithId.getId() ;   
-
-        ResponseEntity<Address> response = testrestTemplate.exchange( url,
-        HttpMethod.PUT,
-        new HttpEntity<>(createAddressValidWithId),
-        new ParameterizedTypeReference<Address>(){});
+        ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
+                url,
+                HttpMethod.PUT,
+                new HttpEntity<>(existingAddress),
+                new ParameterizedTypeReference<>() {}
+        );
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        Address address = response.getBody();
-
-        Assertions.assertThat(address).isNotNull();
-        Assertions.assertThat(address.getId()).isNotNull();
-        Assertions.assertThat(address.getStreet()).isEqualTo("alpheneiros");
-
+        AddressResponseDTO updatedAddress = response.getBody();
+        Assertions.assertThat(updatedAddress).isNotNull();
+        Assertions.assertThat(updatedAddress.id()).isNotNull();
+        Assertions.assertThat(updatedAddress.street()).isEqualTo("alpheneiros");
     }
 
-     @Test
-    @DisplayName("Delete by id: delete address by id when successful ")
-    void delete_deleteAddressAndReturnNoContent_when_Sucessful() {
+    @Test
+    @DisplayName("Delete by id: delete address by id when successful")
+    void delete_DeleteAddressAndReturnNoContent_when_successful() {
+        Address savedAddress = addressRepository.save(AddressModelTests.createAddressValid());
 
-       Address createAddressValidWithId = addressRepository.save(AddressTests.createAddressValid());
+        String url = "/addresses/" + savedAddress.getId();
 
-        String url = "/address/" + createAddressValidWithId.getId() ;   
+        ResponseEntity<Void> response = testRestTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                null,
+                new ParameterizedTypeReference<>() {}
+        );
 
-        ResponseEntity<Void> response = testrestTemplate.exchange( url,
-        HttpMethod.DELETE,
-        null,
-        new ParameterizedTypeReference<Void>(){});
-
-        boolean exists = addressRepository.existsById(createAddressValidWithId.getId());
+        boolean exists = addressRepository.existsById(savedAddress.getId());
 
         Assertions.assertThat(exists).isFalse();
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
-
-
-
 }

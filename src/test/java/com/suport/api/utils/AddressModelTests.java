@@ -12,7 +12,7 @@ public class AddressModelTests {
         .number("123")
         .state("California")
         .city("Los Angeles")
-        .postalCode("90001")
+        .postalCode("13025-200")
         .complement("Apt 45")
         .district("Downtown" )
         .build();
@@ -26,7 +26,7 @@ public class AddressModelTests {
         .number("123")
         .state("California")
         .city("Los Angeles")
-        .postalCode("90001")
+        .postalCode("13025-200")
         .complement("Apt 45")
         .district("Downtown" )
         .build();
@@ -36,11 +36,11 @@ public class AddressModelTests {
 
     public static AddressRequestDTO createAddressResquestDTOValid(){
         return new AddressRequestDTO( 
-            "Main Street",     
+             "Rua das Flores",     
             "123",             
-            "California",     
-            "Los Angeles",     
-            "90001",            
+            "São Paulo",     
+             "Campinas",     
+            "13025-200",            
             "Apt 45",           
             "Downtown"          
         );
@@ -52,7 +52,7 @@ public class AddressModelTests {
             "4",             
             "California",     
             "Los Angeles",     
-            "90001",            
+            "13025-200",            
             "Apt 45",           
             "Downtown"          
         );

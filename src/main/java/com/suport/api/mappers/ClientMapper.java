@@ -23,10 +23,7 @@ public class ClientMapper {
             client.getTaxId(),
             client.getPhone(),
             addressResponseDTO,
-            client.getType(),
-            client.getTasks().stream()
-                .map(Task::getId)
-                .collect(Collectors.toSet())
+            client.getType()
         );
     }
 

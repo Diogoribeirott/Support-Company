@@ -48,7 +48,6 @@ public class Technician  {
 
     @Builder.Default
     @ManyToMany(mappedBy = "technicians", fetch = FetchType.LAZY)
-    @JsonBackReference
     private Set<Task> tasks = new HashSet<>();
 
     @CreationTimestamp
