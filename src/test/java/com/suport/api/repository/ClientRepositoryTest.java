@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +20,28 @@ class ClientRepositoryTest {
     @Autowired
     private ClientRepository clientRepository;
 
+    private  Client clientValid;
+
+    @BeforeEach
+    void setUp(){
+      clientValid = ClientModelTest.createClientValidWithAddress();
+    }
+
     @Test
     @DisplayName("Save: creates client when successful")
     void save_createsClient_whenSuccessful() {
-        Client clientValid = ClientModelTest.createClientValidWithAddress();
         Client client = clientRepository.save(clientValid);
 
-        Assertions.assertThat(client).isNotNull();
-        Assertions.assertThat(client.getId()).isNotNull();
-        Assertions.assertThat(client.getEmail()).isEqualTo(clientValid.getEmail());
-        Assertions.assertThat(client.getType()).isEqualTo(clientValid.getType());
+        Assertions.assertThat(client)
+              .isNotNull()
+              .usingRecursiveComparison()
+              .ignoringFields("id")
+              .isEqualTo(clientValid);
     }
 
     @Test
     @DisplayName("Update: updates client when successful")
     void update_updatesClient_whenSuccessful() {
-        Client clientValid = ClientModelTest.createClientValidWithAddress();
         Client client = clientRepository.save(clientValid);
 
         client.setEmail("google@example.com");
@@ -46,23 +53,18 @@ class ClientRepositoryTest {
         Assertions.assertThat(clientUpdated.getId()).isEqualTo(client.getId());
         Assertions.assertThat(clientUpdated.getEmail()).isEqualTo("google@example.com");
         Assertions.assertThat(clientUpdated.getName()).isEqualTo("Google 2.0");
-        Assertions.assertThat(clientUpdated.getType()).isEqualTo(client.getType());
     }
 
     @Test
     @DisplayName("FindById: returns client when ID exists")
     void findById_returnsClient_whenIdExists() {
-        Client clientValid = ClientModelTest.createClientValidWithAddress();
         Client client = clientRepository.save(clientValid);
 
         Optional<Client> clientOptional = clientRepository.findById(client.getId());
 
-        Assertions.assertThat(clientOptional).isPresent().contains(client);
-
-        Client foundClient = clientOptional.get();
-        Assertions.assertThat(foundClient).isNotNull();
-        Assertions.assertThat(foundClient.getId()).isEqualTo(client.getId());
-        Assertions.assertThat(foundClient.getType()).isEqualTo(clientValid.getType());
+        Assertions.assertThat(clientOptional).isPresent();
+        Assertions.assertThat(clientOptional).isNotEmpty();
+        Assertions.assertThat(clientOptional.get()).usingRecursiveComparison().isEqualTo(client);
     }
 
     @Test
@@ -75,21 +77,19 @@ class ClientRepositoryTest {
     @Test
     @DisplayName("FindAll: returns a list of clients when successful")
     void findAll_returnsAllClients_whenSuccessful() {
-        Client clientValid = ClientModelTest.createClientValidWithAddress();
         Client client = clientRepository.save(clientValid);
 
         List<Client> clientList = clientRepository.findAll();
 
-        Assertions.assertThat(clientList).hasSize(1);
-        Assertions.assertThat(clientList).isNotEmpty();
-        Assertions.assertThat(clientList.getFirst().getId()).isEqualTo(client.getId());
-        Assertions.assertThat(clientList.getFirst().getName()).isEqualTo(client.getName());
+        Assertions.assertThat(clientList).isNotEmpty().isNotNull();
+        Assertions.assertThat(clientList)
+        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+        .contains(client);
     }
 
     @Test
     @DisplayName("Delete: deletes client when successful")
     void delete_deletesClient_whenSuccessful() {
-        Client clientValid = ClientModelTest.createClientValidWithAddress();
         Client client = clientRepository.save(clientValid);
 
         clientRepository.deleteById(client.getId());

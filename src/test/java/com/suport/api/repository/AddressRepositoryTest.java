@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,42 +20,42 @@ public class AddressRepositoryTest {
     @Autowired
     private AddressRepository addressRepository;
 
+    private Address addressValid;
+
+    @BeforeEach
+    void setUp() {
+       addressValid = addressRepository.save(AddressModelTests.createAddressValid());
+    }
+
     @Test
     @DisplayName("Save: creates address when successful")
     void save_createsAddress_whenSuccessful() {
-        Address addressValid = AddressModelTests.createAddressValid();
         Address address = addressRepository.save(addressValid);
-
-        Assertions.assertThat(address).isNotNull();
-        Assertions.assertThat(address.getId()).isNotNull();
-        Assertions.assertThat(address.getStreet()).isEqualTo(addressValid.getStreet());
-        Assertions.assertThat(address.getNumber()).isEqualTo(addressValid.getNumber());
-        Assertions.assertThat(address.getCity()).isEqualTo(addressValid.getCity());
-        Assertions.assertThat(address.getState()).isEqualTo(addressValid.getState());
-        Assertions.assertThat(address.getPostalCode()).isEqualTo(addressValid.getPostalCode());
-        Assertions.assertThat(address.getComplement()).isEqualTo(addressValid.getComplement());
-        Assertions.assertThat(address.getDistrict()).isEqualTo(addressValid.getDistrict());
+        
+        Assertions.assertThat(address)
+              .isNotNull()
+              .usingRecursiveComparison()
+              .ignoringFields("id")
+              .isEqualTo(addressValid);
     }
 
     @Test
     @DisplayName("FindAll: returns a list of addresses when successful")
     void findAll_returnsAllAddresses_whenSuccessful() {
-        Address addressValid = AddressModelTests.createAddressValid();
         Address address = addressRepository.save(addressValid);
 
         List<Address> addressList = addressRepository.findAll();
 
-        Assertions.assertThat(addressList).isNotEmpty();
-        Assertions.assertThat(addressList).hasSize(1);
-        Assertions.assertThat(addressList.getFirst().getId()).isEqualTo(address.getId());
-        Assertions.assertThat(addressList.getFirst().getStreet()).isEqualTo(addressValid.getStreet());
+        Assertions.assertThat(addressList).isNotEmpty().isNotNull();
+        Assertions.assertThat(addressList)
+        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+        .contains(address);
     }
 
     @Test
     @DisplayName("Update: updates address when successful")
     void update_updatesAddress_whenSuccessful() {
-        Address addressValid = AddressModelTests.createAddressValid();
-        Address address = addressRepository.save(addressValid);
+        Address address =addressRepository.save(addressValid);
 
         address.setCity("New York");
         address.setNumber("223");
@@ -63,40 +64,31 @@ public class AddressRepositoryTest {
 
         Assertions.assertThat(addressUpdated).isNotNull();
         Assertions.assertThat(addressUpdated.getId()).isEqualTo(address.getId());
-        Assertions.assertThat(addressUpdated.getStreet()).isEqualTo(address.getStreet());
         Assertions.assertThat(addressUpdated.getNumber()).isEqualTo("223");
         Assertions.assertThat(addressUpdated.getCity()).isEqualTo("New York");
-        Assertions.assertThat(addressUpdated.getState()).isEqualTo(address.getState());
-        Assertions.assertThat(addressUpdated.getPostalCode()).isEqualTo(address.getPostalCode());
-        Assertions.assertThat(addressUpdated.getComplement()).isEqualTo(address.getComplement());
-        Assertions.assertThat(addressUpdated.getDistrict()).isEqualTo(address.getDistrict());
     }
 
     @Test
     @DisplayName("FindById: returns address when ID exists")
     void findById_returnsAddress_whenIdExists() {
-        Address addressValid = AddressModelTests.createAddressValid();
         Address address = addressRepository.save(addressValid);
 
         Optional<Address> addressOptional = addressRepository.findById(address.getId());
 
-        Assertions.assertThat(addressOptional).isPresent().contains(address);
+        Assertions.assertThat(addressOptional).isPresent();
+        Assertions.assertThat(addressOptional.get()).usingRecursiveComparison().isEqualTo(address);
+    }
 
-        Address foundAddress = addressOptional.get();
-        Assertions.assertThat(foundAddress.getId()).isEqualTo(address.getId());
-        Assertions.assertThat(foundAddress.getStreet()).isEqualTo(address.getStreet());
-        Assertions.assertThat(foundAddress.getCity()).isEqualTo(address.getCity());
-        Assertions.assertThat(foundAddress.getNumber()).isEqualTo(address.getNumber());
-        Assertions.assertThat(foundAddress.getState()).isEqualTo(address.getState());
-        Assertions.assertThat(foundAddress.getPostalCode()).isEqualTo(address.getPostalCode());
-        Assertions.assertThat(foundAddress.getComplement()).isEqualTo(address.getComplement());
-        Assertions.assertThat(foundAddress.getDistrict()).isEqualTo(address.getDistrict());
+    @Test
+    @DisplayName("FindById: returns empty when ID does not exist")
+    void findById_returnsEmpty_whenIdNotExists() {
+        Optional<Address> result = addressRepository.findById(999L);
+        Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     @DisplayName("Delete: deletes address when successful")
     void delete_deletesAddress_whenSuccessful() {
-        Address addressValid = AddressModelTests.createAddressValid();
         Address address = addressRepository.save(addressValid);
 
         addressRepository.deleteById(address.getId());

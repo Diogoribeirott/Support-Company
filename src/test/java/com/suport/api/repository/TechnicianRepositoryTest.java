@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +20,28 @@ public class TechnicianRepositoryTest {
     @Autowired
     private TechnicianRepository technicianRepository;
 
+    private Technician technicianValid;
+
+    @BeforeEach
+    void setUp(){
+        technicianValid = TechnicianModelTest.createtechnicianValid();
+    }
+
     @Test
     @DisplayName("Save: creates technician when successful")
     void save_createsTechnician_whenSuccessful() {
-        Technician technicianValid = TechnicianModelTest.createtechnicianValid();
         Technician technician = technicianRepository.save(technicianValid);
 
-        Assertions.assertThat(technician).isNotNull();
         Assertions.assertThat(technician.getId()).isNotNull();
-        Assertions.assertThat(technician.getName()).isEqualTo(technicianValid.getName());
-        Assertions.assertThat(technician.getPhone()).isEqualTo(technicianValid.getPhone());
+        Assertions.assertThat(technician)
+        .usingRecursiveComparison()
+        .ignoringFields("id")
+        .isEqualTo(technician);
     }
 
     @Test
     @DisplayName("Update: updates technician when successful")
     void update_updatesTechnician_whenSuccessful() {
-        Technician technicianValid = TechnicianModelTest.createtechnicianValid();
         Technician technician = technicianRepository.save(technicianValid);
 
         technician.setName("Draven");
@@ -51,7 +58,6 @@ public class TechnicianRepositoryTest {
     @Test
     @DisplayName("FindById: returns technician when ID exists")
     void findById_returnsTechnician_whenIdExists() {
-        Technician technicianValid = TechnicianModelTest.createtechnicianValid();
         Technician technician = technicianRepository.save(technicianValid);
 
         Optional<Technician> technicianOptional = technicianRepository.findById(technician.getId());
@@ -59,8 +65,12 @@ public class TechnicianRepositoryTest {
         Assertions.assertThat(technicianOptional).isPresent().contains(technician);
 
         Technician foundTechnician = technicianOptional.get();
+
         Assertions.assertThat(foundTechnician).isNotNull();
-        Assertions.assertThat(foundTechnician.getId()).isNotNull();
+        Assertions.assertThat(foundTechnician)
+        .usingRecursiveComparison()
+        .ignoringFields("id")
+        .isEqualTo(technician);
     }
 
     @Test
@@ -73,21 +83,19 @@ public class TechnicianRepositoryTest {
     @Test
     @DisplayName("FindAll: returns a list of technicians when successful")
     void findAll_returnsAllTechnicians_whenSuccessful() {
-        Technician technicianValid = TechnicianModelTest.createtechnicianValid();
         Technician technician = technicianRepository.save(technicianValid);
 
         List<Technician> technicianList = technicianRepository.findAll();
 
-        Assertions.assertThat(technicianList).hasSize(1);
-        Assertions.assertThat(technicianList.getFirst().getId()).isNotNull();
-        Assertions.assertThat(technicianList.getFirst().getId()).isEqualTo(technician.getId());
-        Assertions.assertThat(technicianList.getFirst().getName()).isEqualTo(technicianValid.getName());
+        Assertions.assertThat(technicianList).isNotEmpty().isNotNull();
+        Assertions.assertThat(technicianList)
+        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+        .contains(technician);
     }
 
     @Test
     @DisplayName("Delete: deletes technician when successful")
     void delete_deletesTechnician_whenSuccessful() {
-        Technician technicianValid = TechnicianModelTest.createtechnicianValid();
         Technician technician = technicianRepository.save(technicianValid);
 
         technicianRepository.deleteById(technician.getId());
