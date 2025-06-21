@@ -1,6 +1,7 @@
 package com.suport.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.suport.api.domain.Address;
 import com.suport.api.dtos.request.AddressRequestDTO;
+import com.suport.api.dtos.response.AddressResponseDTO;
 import com.suport.api.exceptions.BadRequestException;
 import com.suport.api.service.AddressService;
 import com.suport.api.utils.AddressModelTests;
@@ -26,132 +28,128 @@ import com.suport.api.utils.AddressModelTests;
 @ExtendWith(SpringExtension.class)
 public class AddressControllerTest {
 
-    // @InjectMocks
-    // private AddressController addressController;
+     @InjectMocks
+     private AddressController addressController;
 
-    // @Mock
-    // private AddressService addressServiceMock;
+    @Mock
+    private AddressService addressServiceMock;
 
-    // @BeforeEach
-    // void setUp(){
-    //     Address addressValidWithId = AddressTests.createAddressValidWithId();
-    //     List<Address> listAddresses = List.of(addressValidWithId);
+    private Address addressValidWithId;
 
-    //     BDDMockito.when(addressServiceMock.findByIdOrThrowBadRequestException(ArgumentMatchers.any(Long.class)))
-    //         .thenReturn(addressValidWithId);
+    @BeforeEach
+    void setUp(){
 
-    //     BDDMockito.when(addressServiceMock.findAll())
-    //         .thenReturn(listAddresses);
+        addressValidWithId = AddressModelTests.createAddressValidWithId();
+        AddressResponseDTO addressResponseDTO = AddressModelTests.createAddressResponseDTO();
 
-    //     BDDMockito.when(addressServiceMock.save(ArgumentMatchers.any(AddressDTO.class)))
-    //         .thenReturn(addressValidWithId);
+        BDDMockito.when(addressServiceMock.findByIdOrThrowBadRequestException(ArgumentMatchers.any(Long.class)))
+            .thenReturn(addressValidWithId);
+
+        BDDMockito.when(addressServiceMock.findAll())
+            .thenReturn(List.of(addressResponseDTO));
+
+        BDDMockito.when(addressServiceMock.save(ArgumentMatchers.any(AddressRequestDTO.class)))
+            .thenReturn(addressResponseDTO);
         
-    //     BDDMockito.when(addressServiceMock.update(ArgumentMatchers.any(AddressDTO.class),ArgumentMatchers.any(Long.class)))
-    //         .thenReturn(addressValidWithId);
+        BDDMockito.when(addressServiceMock.update(ArgumentMatchers.any(AddressRequestDTO.class),ArgumentMatchers.any(Long.class)))
+            .thenReturn(addressResponseDTO);
 
-    //     BDDMockito.doNothing().when(addressServiceMock).deleteById(ArgumentMatchers.any(Long.class));
+        BDDMockito.doNothing().when(addressServiceMock).deleteById(ArgumentMatchers.any(Long.class));
 
-    // }
+    }
 
 
-    // @Test
-    // @DisplayName("Delete by id: delete address by id when successful ")
-    // void delete_deleteAddressAndReturnNoContent_when_Sucessful() {
-    //     ResponseEntity<Void> response = addressController.deleteById(1l);
+    @Test
+    @DisplayName("Delete by id: delete address by id when successful ")
+    void delete_deleteAddressAndReturnNoContent_when_Sucessful() {
+        ResponseEntity<Void> response = addressController.deleteById(1l);
 
-    //     Assertions.assertThat(response).isNotNull();
-    //     Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    // }
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
 
-    // @Test
-    // @DisplayName("Find by id: find address by id when successful ")
-    // void findById_ReturnAnAddress_when_sucessful() {
+    @Test
+    @DisplayName("Find by id: find address by id when successful ")
+    void findById_ReturnAnAddress_when_sucessful() {
+         ResponseEntity<AddressResponseDTO> response = addressController.findById(1l);
 
-    //     Address addressValidWithId = AddressTests.createAddressValidWithId();
-    //     ResponseEntity<Address> response = addressController.findID(5l);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    //     Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+         AddressResponseDTO addressResponseDTO = response.getBody();
 
-    //     Address address = response.getBody();
+        Assertions.assertThat(addressResponseDTO).isNotNull();
+        Assertions.assertThat(addressResponseDTO.id()).isNotNull();
+        Assertions.assertThat(addressResponseDTO.street()).isEqualTo(addressValidWithId.getStreet());
+        Assertions.assertThat(addressResponseDTO.number()).isEqualTo(addressValidWithId.getNumber());
+        Assertions.assertThat(addressResponseDTO.city()).isEqualTo(addressValidWithId.getCity());
+        Assertions.assertThat(addressResponseDTO.state()).isEqualTo(addressValidWithId.getState());
 
-    //     Assertions.assertThat(address).isNotNull();
-    //     Assertions.assertThat(address.getId()).isNotNull();
-    //     Assertions.assertThat(address.getStreet()).isEqualTo(addressValidWithId.getStreet());
-    //     Assertions.assertThat(address.getNumber()).isEqualTo(addressValidWithId.getNumber());
-    //     Assertions.assertThat(address.getCity()).isEqualTo(addressValidWithId.getCity());
-    //     Assertions.assertThat(address.getState()).isEqualTo(addressValidWithId.getState());
-    //     Assertions.assertThat(address.getPostalCode()).isEqualTo(addressValidWithId.getPostalCode());
-    //     Assertions.assertThat(address.getComplement()).isEqualTo(addressValidWithId.getComplement());
-    //     Assertions.assertThat(address.getDistrict()).isEqualTo(addressValidWithId.getDistrict());
+    }
 
-    // }
+    @Test
+    @DisplayName("when id does not exist: throw bad request exception ")
+    void findById_ReturnthrowBadRequestException_when_idNotExits() {
 
-    // @Test
-    // @DisplayName("when id does not exist: throw bad request exception ")
-    // void findById_ReturnthrowBadRequestException_when_idNotExits() {
+        BDDMockito.when(addressServiceMock.findByIdOrThrowBadRequestException(ArgumentMatchers.any()))
+            .thenThrow(new BadRequestException("Address not found"));
 
-    //     BDDMockito.when(addressServiceMock.findByIdOrThrowBadRequestException(ArgumentMatchers.any()))
-    //         .thenThrow(new BadRequestException("Address not found"));
+            BadRequestException exception = assertThrows(BadRequestException.class, () ->addressController.findById(5l));
 
-    //         BadRequestException exception = assertThrows(BadRequestException.class, () ->addressController.findID(5l));
+            Assertions.assertThat(exception.getMessage()).isEqualTo("Address not found");
 
-    //         Assertions.assertThat(exception.getMessage()).isEqualTo("Address not found");
+    }
 
-    // }
+    @Test
+    @DisplayName("FindALL: return list of addreses")
+    void findAll_ReturnListOfAddress_when_sucessful() {
+         ResponseEntity<List<AddressResponseDTO>> response = addressController.findAll();
 
-    // @Test
-    // @DisplayName("FindALL: return list of addreses")
-    // void findAll_ReturnListOfAddress_when_sucessful() {
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        
+        List<AddressResponseDTO> addressResponseDTOList = response.getBody();
 
-    //     Address addressValidWithId = AddressTests.createAddressValidWithId();
-    //     ResponseEntity<List<Address>> response = addressController.findAll();
+        Assertions.assertThat(addressResponseDTOList).isNotEmpty().isNotNull();
+       Assertions.assertThat(addressResponseDTOList)
+          .anyMatch(dto -> 
+              dto.street().equals(addressValidWithId.getStreet()) &&
+              dto.city().equals(addressValidWithId.getCity()) &&
+              dto.number().equals(addressValidWithId.getNumber()) 
+          );
+    }
 
-    //     Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    @Test
+    @DisplayName("Save: save addressDTO and return an address")
+    void save_returnAddress_when_sucessfull() {
 
-    //     List<Address> listAddresses = response.getBody();
+        ResponseEntity<AddressResponseDTO> response = addressController.save( AddressModelTests.createAddressResquestDTOValid());
 
-    //     Assertions.assertThat(listAddresses).isNotEmpty();
-    //     Assertions.assertThat(listAddresses.get(0)).isEqualTo(addressValidWithId);
-    // }
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-    // @Test
-    // @DisplayName("Save: save addressDTO and return an address")
-    // void save_returnAddress_when_sucessfull() {
+         AddressResponseDTO addressResponseDTO = response.getBody();
 
-    //     AddressDTO addressDTOValid = AddressTests.createAddressDTOValid();
-
-    //     ResponseEntity<Address> response = addressController.save(addressDTOValid);
-
-    //     Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-
-    //     Address address = response.getBody();
-
-    //     Assertions.assertThat(address).isNotNull();
-    //     Assertions.assertThat(address.getId()).isNotNull();
+        Assertions.assertThat(addressResponseDTO).isNotNull();
+        Assertions.assertThat(addressResponseDTO.id()).isNotNull();
       
-    // }
+    }
 
-    // @Test
-    // @DisplayName("Update: update address with addressDTO and long id, return an address")
-    // void update_returnAddress_when_sucessfull() {
-    //     AddressDTO addressDTOValid = AddressTests.createAddressDTOValid();
-    //     Address address = addressController.update(addressDTOValid, 5l).getBody();
+    @Test
+    @DisplayName("Update: update address with addressDTO and long id, return an address")
+    void update_returnAddress_when_sucessfull() {
+         AddressResponseDTO addressResponseDTO = addressController.update(AddressModelTests.createAddressResquestDTOValid(), 5l).getBody();
 
-    //     Assertions.assertThat(address).isNotNull();
-    //     Assertions.assertThat(address.getId()).isNotNull();
+        Assertions.assertThat(addressResponseDTO).isNotNull();
+        Assertions.assertThat(addressResponseDTO.id()).isNotNull();
+    }
 
-    // }
+    @Test
+    @DisplayName("when address with id does not exist: throw bad request exception ")
+    void update_ReturnthrowBadRequestException_when_idNotExits() {
+        BDDMockito.when(addressServiceMock.update(ArgumentMatchers.any(AddressRequestDTO.class),ArgumentMatchers.any(Long.class)))
+            .thenThrow(new BadRequestException("Address not found"));
 
-    // @Test
-    // @DisplayName("when address with id does not exist: throw bad request exception ")
-    // void update_ReturnthrowBadRequestException_when_idNotExits() {
-    //     AddressDTO addressDTOValid = AddressTests.createAddressDTOValid();
-    //     BDDMockito.when(addressServiceMock.update(ArgumentMatchers.any(AddressDTO.class),ArgumentMatchers.any(Long.class)))
-    //         .thenThrow(new BadRequestException("Address not found"));
+            BadRequestException exception = assertThrows(BadRequestException.class, () ->addressController.update(AddressModelTests.createAddressResquestDTOValid(),5l));
 
-    //         BadRequestException exception = assertThrows(BadRequestException.class, () ->addressController.update(addressDTOValid,5l));
+            Assertions.assertThat(exception.getMessage()).isEqualTo("Address not found");
 
-    //         Assertions.assertThat(exception.getMessage()).isEqualTo("Address not found");
-
-    // }
+    }
 }
