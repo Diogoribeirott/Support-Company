@@ -1,5 +1,7 @@
 package com.suport.api.repository;
 
+import static org.mockito.ArgumentMatchers.isNotNull;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +26,9 @@ import com.suport.api.utils.TechnicianModelTest;
 @DisplayName("Tests for the Task repository")
 public class TaskRepositoryTest {
 
+
     @Autowired
-    private TaskRepository taskRepository;
+    private  TaskRepository taskRepository;
 
     @Autowired
     private ClientRepository clientRepository;
@@ -35,99 +38,109 @@ public class TaskRepositoryTest {
 
     @Test
     @DisplayName("Save: creates task when successful")
-    void save_createsTask_whenSuccessful() {
+    void save_createtask_when_successful(){
         Task taskValid = TaskModelTests.createtaskValid();
         Task task = taskRepository.save(taskValid);
 
         Assertions.assertThat(task).isNotNull();
         Assertions.assertThat(task.getId()).isNotNull();
         Assertions.assertThat(task.getClient()).isNotNull();
+        Assertions.assertThat(task.getCreatedAt()).isNotNull();
         Assertions.assertThat(task.getTechnicians()).isNotNull();
         Assertions.assertThat(task.getTitle()).isEqualTo(taskValid.getTitle());
-        Assertions.assertThat(task.getCreatedAt()).isNotNull();
+
     }
 
     @Test
-    @DisplayName("Update: updates task when successful")
-    void update_updatesTask_whenSuccessful() {
-        Technician technician = technicianRepository.save(TechnicianModelTest.updateTechnicianValid());
-        Client client = clientRepository.save(ClientModelTest.updateClientValidWithAddress());
+    @DisplayName("Update: Update task when successful")
+    void Update_Updatetask_when_Successful(){
+        Technician technician = TechnicianModelTest.updateTechnicianValid();
+        Client client = ClientModelTest.updateClientValidWithAddress();
 
-        Task task = taskRepository.save(TaskModelTests.createtaskValid());
+        Task taskValid = TaskModelTests.createtaskValid();
+        Task task = taskRepository.save(taskValid);
 
         task.setStatus(TaskStatus.IN_PROGRESS);
-        task.setTitle("I don't know");
+        task.setTitle("I don't know"); 
         task.setClient(client);
-        task.setTechnicians(new HashSet<>(Set.of(technician)));
+        task.setTechnicians( new HashSet<>(Set.of(technician)) );
 
-        Task taskUpdated = taskRepository.save(task);
+        Task taskUpdate = taskRepository.save(task);
 
-        Assertions.assertThat(taskUpdated).isNotNull();
-        Assertions.assertThat(taskUpdated.getId()).isEqualTo(task.getId());
-        Assertions.assertThat(taskUpdated.getTitle()).isEqualTo("I don't know");
-        Assertions.assertThat(taskUpdated.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
-        Assertions.assertThat(taskUpdated.getTechnicians()).contains(technician);
-        Assertions.assertThat(taskUpdated.getClient()).isEqualTo(client);
+        Assertions.assertThat(taskUpdate).isNotNull();
+        Assertions.assertThat(taskUpdate.getId()).isNotNull();
+        Assertions.assertThat(taskUpdate.getStatus()).isEqualTo(task.getStatus());
+        Assertions.assertThat(taskUpdate.getTitle()).isEqualTo(task.getTitle());
+        Assertions.assertThat(taskUpdate.getTechnicians().contains(technician));
+        Assertions.assertThat(taskUpdate.getClient()).isEqualTo(client);
+
     }
 
     @Test
-    @DisplayName("FindById: returns task when ID exists")
-    void findById_returnsTask_whenIdExists() {
-        Task task = taskRepository.save(TaskModelTests.createtaskValid());
+    @DisplayName("FindbyId: return optinal with task when successful")
+    void findById_findByIdtask_when_Successful(){
+        Task taskValid = TaskModelTests.createtaskValid();
+        Task task = taskRepository.save(taskValid);
 
         Optional<Task> taskOptional = taskRepository.findById(task.getId());
 
+        Assertions.assertThat(taskOptional).isNotEmpty();
         Assertions.assertThat(taskOptional).isPresent().contains(task);
-        Assertions.assertThat(taskOptional.get().getId()).isEqualTo(task.getId());
+
+         Task foundtask = taskOptional.get();
+
+        Assertions.assertThat(foundtask).isNotNull();
+        Assertions.assertThat(foundtask.getId()).isNotNull();
+
     }
 
     @Test
-    @DisplayName("FindById: returns empty when ID does not exist")
+    @DisplayName("FindbyId: return optinal empty when successful")
     void findById_returnsEmpty_whenIdDoesNotExist() {
-        Optional<Task> result = taskRepository.findById(9999999L);
-        Assertions.assertThat(result).isEmpty();
+        Optional<Task> result = taskRepository.findById(9999999l);
+
+        Assertions.assertThat(result).isEmpty(); 
     }
 
-    @Test
-    @DisplayName("FindAll: returns list of tasks when successful")
-    void findAll_returnsAllTasks_whenSuccessful() {
+     @Test
+    @DisplayName("FindAll: Returns a list of addresses when successful")
+    void findAll_ReturnAllAddress_when_Successful(){
         Client client = clientRepository.save(ClientModelTest.createClientValidWithAddress());
         Technician technician = technicianRepository.save(TechnicianModelTest.createtechnicianValid());
 
-        Task task = Task.builder()
-                .title("Login system error")
-                .description("The Client reported that they are unable to access their account.")
-                .status(TaskStatus.OPEN)
-                .priority(TaskPriority.HIGH)
-                .client(client)
-                .technicians(new HashSet<>(Set.of(technician)))
-                .build();
+        Task task = TaskModelTests.createtaskValid();
+        task.setClient(client);
+        task.setTechnicians(Set.of(technician));
 
         taskRepository.save(task);
 
         List<Task> taskList = taskRepository.findAll();
 
         Assertions.assertThat(taskList).hasSize(1);
-        Assertions.assertThat(taskList).isNotEmpty();
+        Assertions.assertThat(taskList.isEmpty()).isFalse();
+        Assertions.assertThat(taskList.getFirst().getId()).isNotNull();
         Assertions.assertThat(taskList.getFirst().getId()).isEqualTo(task.getId());
         Assertions.assertThat(taskList.getFirst().getTitle()).isEqualTo(task.getTitle());
     }
 
     @Test
-    @DisplayName("Delete: deletes task when successful")
-    void delete_deletesTask_whenSuccessful() {
-        Task task = taskRepository.save(TaskModelTests.createtaskValid());
+    @DisplayName("delete: delete task when successful")
+    void delete_deleteAddress_when_Successful(){
+        Task taskValid = TaskModelTests.createtaskValid();
+        Task task = taskRepository.save(taskValid);
 
         taskRepository.deleteById(task.getId());
-
         Optional<Task> taskOptional = taskRepository.findById(task.getId());
-        Assertions.assertThat(taskOptional).isEmpty();
+    
+         Assertions.assertThat(taskOptional.isEmpty()).isTrue();
     }
 
     @Test
-    @DisplayName("Delete: does nothing when ID does not exist")
-    void delete_doesNothing_whenIdDoesNotExist() {
-        Assertions.assertThatCode(() -> taskRepository.deleteById(1L))
-                .doesNotThrowAnyException();
+    @DisplayName("delete: does nothing when ID does not exist")
+    void delete_doesNothing_when_NotSuccessful(){
+
+        Assertions.assertThatCode(() ->taskRepository.deleteById(1l)).doesNotThrowAnyException();
+
     }
+
 }

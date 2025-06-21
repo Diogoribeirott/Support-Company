@@ -81,6 +81,6 @@ public class ClientModelTest {
             "(00) 0000-0000",
             AddressModelTests.createAddressResponseDTO() ,
             ClientType.BUSINESS);
-    }
 
-}
+        }
+    }

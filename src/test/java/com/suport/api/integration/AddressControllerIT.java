@@ -12,15 +12,19 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.suport.api.domain.Address;
+import com.suport.api.domain.Client;
 import com.suport.api.dtos.request.AddressRequestDTO;
 import com.suport.api.dtos.response.AddressResponseDTO;
 import com.suport.api.repository.AddressRepository;
 import com.suport.api.utils.AddressModelTests;
+import com.suport.api.utils.ClientModelTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
@@ -35,13 +39,27 @@ class AddressControllerIT {
     @LocalServerPort
     private int port;
 
+    private String getBaseUrl() {
+      return "http://localhost:" + port + "/addresses";
+    }
+
+    private  Address createAddressInDatabase(){
+    return  addressRepository.save(AddressModelTests.createAddressValid());
+    
+    }
+    private <T> HttpEntity<T> jsonEntity(T body) {
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      return new HttpEntity<>(body, headers);
+    }
+
     @Test
-    @DisplayName("FindALL: return list of addresses")
+    @DisplayName("FindAll: should return list of address")
     void findAll_ReturnListOfAddress_when_successful() {
-        Address savedAddress = addressRepository.save(AddressModelTests.createAddressValid());
+        Address savedAddress = createAddressInDatabase();
 
         ResponseEntity<List<AddressResponseDTO>> response = testRestTemplate.exchange(
-                "/addresses",
+                getBaseUrl(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {}
@@ -55,14 +73,12 @@ class AddressControllerIT {
     }
 
     @Test
-    @DisplayName("Find by id: find address by id when successful")
+    @DisplayName("FindById: should return address when id exists")
     void findById_ReturnAnAddress_when_successful() {
-        Address savedAddress = addressRepository.save(AddressModelTests.createAddressValid());
-
-        String url = "/addresses/" + savedAddress.getId();
+        Address savedAddress = createAddressInDatabase();
 
         ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
-                url,
+                getBaseUrl()+"/"+savedAddress.getId(),
                 HttpMethod.GET,
                 null,
                 AddressResponseDTO.class
@@ -80,12 +96,11 @@ class AddressControllerIT {
     }
 
     @Test
-    @DisplayName("When id does not exist: throw bad request exception")
+    @DisplayName("FindById: should return BAD_REQUEST when id does not exist")
     void findById_ReturnThrowBadRequestException_when_idNotExists() {
-        String url = "/addresses/9999999";
 
         ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
-                url,
+                getBaseUrl()+"/999999999",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {}
@@ -95,14 +110,14 @@ class AddressControllerIT {
     }
 
     @Test
-    @DisplayName("Save: save addressDTO and return an address")
+    @DisplayName("Save: should return created address")
     void save_ReturnAddress_when_successful() {
         AddressRequestDTO requestDTO = AddressModelTests.createAddressResquestDTOValid();
 
         ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
-                "/addresses",
+                getBaseUrl(),
                 HttpMethod.POST,
-                new HttpEntity<>(requestDTO),
+                jsonEntity(requestDTO),
                 new ParameterizedTypeReference<>() {}
         );
 
@@ -114,17 +129,15 @@ class AddressControllerIT {
     }
 
     @Test
-    @DisplayName("Update: update address with addressDTO and long id, return an address")
+    @DisplayName("Update: should return updated Address")
     void update_ReturnAddress_when_successful() {
-        Address existingAddress = addressRepository.save(AddressModelTests.createAddressValid());
+        Address existingAddress = createAddressInDatabase();
         existingAddress.setStreet("alpheneiros");
 
-        String url = "/addresses/" + existingAddress.getId();
-
         ResponseEntity<AddressResponseDTO> response = testRestTemplate.exchange(
-                url,
+                getBaseUrl()+"/"+existingAddress.getId(),
                 HttpMethod.PUT,
-                new HttpEntity<>(existingAddress),
+                jsonEntity(existingAddress),
                 new ParameterizedTypeReference<>() {}
         );
 
@@ -137,14 +150,12 @@ class AddressControllerIT {
     }
 
     @Test
-    @DisplayName("Delete by id: delete address by id when successful")
+    @DisplayName("Delete: should delete Address by id")
     void delete_DeleteAddressAndReturnNoContent_when_successful() {
-        Address savedAddress = addressRepository.save(AddressModelTests.createAddressValid());
-
-        String url = "/addresses/" + savedAddress.getId();
+        Address savedAddress = createAddressInDatabase();
 
         ResponseEntity<Void> response = testRestTemplate.exchange(
-                url,
+                getBaseUrl()+"/"+savedAddress.getId(),
                 HttpMethod.DELETE,
                 null,
                 new ParameterizedTypeReference<>() {}
