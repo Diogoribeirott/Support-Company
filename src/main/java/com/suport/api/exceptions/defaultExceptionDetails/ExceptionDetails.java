@@ -1,4 +1,4 @@
-package com.suport.api.exceptions;
+package com.suport.api.exceptions.defaultExceptionDetails;
 
 import java.time.LocalDateTime;
 
