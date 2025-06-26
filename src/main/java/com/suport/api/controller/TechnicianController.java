@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/technicians")
@@ -42,7 +43,8 @@ public class TechnicianController {
     // =============================
     @Operation(
         summary = "Get a new Technician",
-        description = "Created and persists in the database"
+        description = "Created and persists in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -79,7 +81,8 @@ public class TechnicianController {
     // =============================
     @Operation(
         summary = "Get Technician by ID",
-        description = "Returns the Technician identified by the given ID"
+        description = "Returns the Technician identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -93,6 +96,11 @@ public class TechnicianController {
         @ApiResponse(
             responseCode = "400",
             description = "Client not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
@@ -112,7 +120,8 @@ public class TechnicianController {
     // =============================
     @Operation(
         summary = "List all Technician",
-        description = "Returns a list of all Technician in the database"
+        description = "Returns a list of all Technician in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -122,6 +131,11 @@ public class TechnicianController {
                 mediaType = "application/json",
                 array = @ArraySchema(schema = @Schema(implementation = TechnicianResponseDTO.class))
             )
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "500",
@@ -140,6 +154,7 @@ public class TechnicianController {
     @Operation(
     summary = "Update client by ID",
     description = "Updates the Technician identified by the provided ID and with the provided data  in body",
+        security = @SecurityRequirement(name = "bearerAuth"),
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Technician data to update",
         required = true,
@@ -164,6 +179,11 @@ public class TechnicianController {
             content = @Content
         ),
         @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
+        ),
+        @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
             content = @Content
@@ -179,7 +199,8 @@ public class TechnicianController {
     // =============================
      @Operation(
         summary = "Delete Technician by ID",
-        description = "Deletes the Technician identified by the given ID"
+        description = "Deletes the Technician identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -189,6 +210,11 @@ public class TechnicianController {
         @ApiResponse(
             responseCode = "400",
             description = "Technician not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(

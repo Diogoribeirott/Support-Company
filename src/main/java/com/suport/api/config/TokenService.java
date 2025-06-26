@@ -21,6 +21,12 @@ public class TokenService {
     @Value("${api.security.token.secretKey}")
     private String secretKey;
 
+    @Value("${api.security.token.issuer}")
+    private String issuer;
+
+    @Value("${api.security.token.expiration-minutes}")
+    private long expirationMinutes;
+
     // =============================
     // CREATE TOKEN
     // =============================
@@ -30,7 +36,7 @@ public class TokenService {
 
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
             String token = JWT.create()
-                    .withIssuer("SuportTI")
+                    .withIssuer(issuer)
                     .withSubject(userModel.getLogin())
                     .withExpiresAt(generateExpirationTime())
                     .sign(algorithm);
@@ -43,7 +49,7 @@ public class TokenService {
     }
 
     private Instant generateExpirationTime(){
-        return LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusMinutes(expirationMinutes).toInstant(ZoneOffset.of("-03:00"));
 
     }
 
@@ -55,7 +61,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
           return  JWT.require(algorithm)
-                .withIssuer("SuportTI")
+                .withIssuer(issuer)
                 .build()
                 .verify(token)
                 .getSubject();

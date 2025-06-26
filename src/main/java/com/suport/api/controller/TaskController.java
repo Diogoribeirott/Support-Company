@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/tasks")
@@ -41,7 +42,8 @@ public class TaskController {
     // =============================
     @Operation(
         summary = "Get a new Task",
-        description = "Created and persists in the database"
+        description = "Created and persists in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -58,6 +60,11 @@ public class TaskController {
             description = "Invalid input data",
             content = @Content
 
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
         ),
          @ApiResponse(
             responseCode = "500",
@@ -78,7 +85,8 @@ public class TaskController {
     // =============================
     @Operation(
         summary = "Get Task by ID",
-        description = "Returns the Task identified by the given ID"
+        description = "Returns the Task identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -92,6 +100,11 @@ public class TaskController {
         @ApiResponse(
             responseCode = "400",
             description = "Client not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
@@ -111,7 +124,8 @@ public class TaskController {
     // =============================
     @Operation(
         summary = "List all Task",
-        description = "Returns a list of all Task in the database"
+        description = "Returns a list of all Task in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -121,6 +135,11 @@ public class TaskController {
                 mediaType = "application/json",
                 array = @ArraySchema(schema = @Schema(implementation = TaskResponseDTO.class))
             )
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "500",
@@ -139,6 +158,7 @@ public class TaskController {
     @Operation(
     summary = "Update client by ID",
     description = "Updates the Task identified by the provided ID and with the provided data  in body",
+        security = @SecurityRequirement(name = "bearerAuth"),
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Task data to update",
         required = true,
@@ -163,6 +183,11 @@ public class TaskController {
             content = @Content
         ),
         @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
+        ),
+        @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
             content = @Content
@@ -178,7 +203,8 @@ public class TaskController {
     // =============================
      @Operation(
         summary = "Delete Task by ID",
-        description = "Deletes the Task identified by the given ID"
+        description = "Deletes the Task identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -188,6 +214,11 @@ public class TaskController {
         @ApiResponse(
             responseCode = "400",
             description = "Task not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(

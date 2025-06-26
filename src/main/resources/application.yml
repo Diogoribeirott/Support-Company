@@ -1,0 +1,81 @@
+# =============================
+# CONFIGURAÇÃO COMUM A TODOS OS PERFIS
+# =============================
+spring:
+  application:
+    name: springboot-test
+  profiles:
+    active: dev # <- perfil padrão (opcional, se quiser ativar automaticamente)
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics, prometheus
+
+  endpoint:
+    prometheus:
+      enabled: true
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+---
+
+# =============================
+# PERFIL: DEV
+# =============================
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: ${DATABASE_URL} 
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+api:
+  security:
+    token:
+      secretKey: ${JWT_SECRET_KEY} 
+      issuer: ${JWT_SECRET_ISSUER} 
+      expiration-minutes: ${JWT_EXPIRATION_MINUTES} 
+
+---
+
+# =============================
+# PERFIL: PROD
+# =============================
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+api:
+  security:
+    token:
+      secretKey: ${JWT_SECRET_KEY}
+      issuer: ${JWT_SECRET_ISSUER}
+      expiration-minutes: ${JWT_SECRET_EXPIRATION_MINUTES}

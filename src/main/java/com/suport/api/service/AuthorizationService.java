@@ -15,7 +15,10 @@ public class AuthorizationService implements UserDetailsService {
     public AuthorizationService(UserModelRepository userModelRepository){
         this.userModelRepository = userModelRepository;
     }
-    //Userdetails in database
+    
+    // =============================
+    // USER IN DATABASE
+    // =============================
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
       return userModelRepository.findByLogin(login)

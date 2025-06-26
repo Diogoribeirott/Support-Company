@@ -34,7 +34,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         Map<String, Object> body = new HashMap<>();
         body.put("status", 401);
         body.put("error", "Unauthorized");
-        body.put("message", "Invalid username or password");
+        body.put("message", "invalid credentials or invalid/expired token");
         body.put("path", request.getRequestURI());
 
         objectMapper.writeValue(response.getOutputStream(), body);

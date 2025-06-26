@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,8 @@ public class ClientController {
     // =============================
     @Operation(
         summary = "Create a new client",
-        description = "Creates and persists a new client in the database"
+        description = "Creates and persists a new client in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -52,6 +53,11 @@ public class ClientController {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid input data",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
@@ -71,7 +77,8 @@ public class ClientController {
     // =============================
     @Operation(
         summary = "Get client by ID",
-        description = "Returns the client identified by the given ID"
+        description = "Returns the client identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -85,6 +92,11 @@ public class ClientController {
         @ApiResponse(
             responseCode = "400",
             description = "Client not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
@@ -104,7 +116,8 @@ public class ClientController {
     // =============================
     @Operation(
         summary = "List all clients",
-        description = "Returns a list of all clients in the database"
+        description = "Returns a list of all clients in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -114,6 +127,11 @@ public class ClientController {
                 mediaType = "application/json",
                 array = @ArraySchema(schema = @Schema(implementation = ClientResponseDTO.class))
             )
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "500",
@@ -132,6 +150,7 @@ public class ClientController {
     @Operation(
     summary = "Update client by ID",
     description = "Updates the client identified by the provided ID and with the provided data  in body",
+        security = @SecurityRequirement(name = "bearerAuth"),
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Client data to update",
         required = true,
@@ -193,6 +212,11 @@ public class ClientController {
             content = @Content
         ),
         @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
+        ),
+        @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
             content = @Content
@@ -208,7 +232,8 @@ public class ClientController {
     // =============================
     @Operation(
         summary = "Delete client by ID",
-        description = "Deletes the client identified by the given ID"
+        description = "Deletes the client identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -218,6 +243,11 @@ public class ClientController {
         @ApiResponse(
             responseCode = "400",
             description = "Client not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(

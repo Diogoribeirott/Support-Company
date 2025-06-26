@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,8 @@ public class AddressController {
     // =============================
      @Operation(
         summary = "Create a new address",
-        description = "Creates and persists a new address in the database"
+        description = "Creates and persists a new address in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -50,6 +51,11 @@ public class AddressController {
         @ApiResponse(
             responseCode = "400",
             description = "Invalid input data",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
@@ -69,7 +75,8 @@ public class AddressController {
     // =============================
     @Operation(
         summary = "Get address by ID",
-        description = "Returns the address identified by the given ID"
+        description = "Returns the address identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -83,6 +90,11 @@ public class AddressController {
         @ApiResponse(
             responseCode = "400",
             description = "Address not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
@@ -102,7 +114,8 @@ public class AddressController {
     // =============================
     @Operation(
         summary = "List all addresses",
-        description = "Returns a list of all addresses in the database"
+        description = "Returns a list of all addresses in the database",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -112,6 +125,11 @@ public class AddressController {
                 mediaType = "application/json",
                 array = @ArraySchema(schema = @Schema(implementation = AddressResponseDTO.class))
             )
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "500",
@@ -129,7 +147,8 @@ public class AddressController {
     // =============================
     @Operation(
         summary = "Update address by ID",
-        description = "Updates the address identified by the given ID with the data provided"
+        description = "Updates the address identified by the given ID with the data provided",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -143,6 +162,11 @@ public class AddressController {
         @ApiResponse(
             responseCode = "400",
             description = "Address not found",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
@@ -161,7 +185,8 @@ public class AddressController {
     // =============================
     @Operation(
         summary = "Delete address by ID",
-        description = "Deletes the address identified by the given ID"
+        description = "Deletes the address identified by the given ID",
+        security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -171,6 +196,11 @@ public class AddressController {
         @ApiResponse(
             responseCode = "400",
             description = "Address not found",
+            content = @Content
+        ),
+         @ApiResponse(
+            responseCode = "401",
+            description = "Unauthorized: invalid credentials or invalid/expired token.",
             content = @Content
         ),
         @ApiResponse(
