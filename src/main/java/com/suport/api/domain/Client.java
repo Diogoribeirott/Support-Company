@@ -49,7 +49,7 @@ public class Client {
     private ClientType type;
 
     @Builder.Default
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();
 
     @CreationTimestamp

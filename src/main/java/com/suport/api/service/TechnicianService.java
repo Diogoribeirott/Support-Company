@@ -7,20 +7,24 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.suport.api.domain.Task;
 import com.suport.api.domain.Technician;
 import com.suport.api.dtos.request.TechnicianRequestDTO;
 import com.suport.api.dtos.response.TechnicianResponseDTO;
 import com.suport.api.exceptions.BadRequestException;
 import com.suport.api.mappers.TechnicianMapper;
+import com.suport.api.repository.TaskRepository;
 import com.suport.api.repository.TechnicianRepository;
 
 @Service
 public class TechnicianService {
 
     private final TechnicianRepository technicianRepository;
+    private final TaskRepository taskRepository;
 
-    public TechnicianService(TechnicianRepository technicianRepository) {
+    public TechnicianService(TechnicianRepository technicianRepository,TaskRepository taskRepository) {
         this.technicianRepository = technicianRepository;
+        this.taskRepository = taskRepository;
     }
 
     // =============================
@@ -68,7 +72,14 @@ public class TechnicianService {
     // =============================
     @Transactional
     public void delete(Long id) {
-        findByIdOrThrowBadRequestException(id);
-        technicianRepository.deleteById(id);
+        Technician technician = findByIdOrThrowBadRequestException(id);
+
+          for (Task task : technician.getTasks()) {
+            task.getTechnicians().remove(technician);
+            taskRepository.save(task);
+        }
+
+        technician.getTasks().clear();
+        technicianRepository.delete(technician);
     }
 }

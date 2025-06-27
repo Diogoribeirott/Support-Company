@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import org.hibernate.engine.jdbc.env.internal.LobCreationLogging_.logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,11 @@ import com.suport.api.domain.UserModel;
 import com.suport.api.exceptions.TokenGenerationException;
 import com.suport.api.exceptions.TokenValidationException;
 
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class TokenService {
 
     @Value("${api.security.token.secretKey}")
@@ -58,6 +63,7 @@ public class TokenService {
     // =============================
 
    public String tokenValidation(String token){
+    log.info(" o token gerado e tentando validar"+token);
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
           return  JWT.require(algorithm)

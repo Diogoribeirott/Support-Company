@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.suport.api.domain.Technician;
-import com.suport.api.dtos.request.ClientRequestUpdateDTO;
 import com.suport.api.dtos.request.TechnicianRequestDTO;
 import com.suport.api.dtos.response.TechnicianResponseDTO;
 import com.suport.api.mappers.TechnicianMapper;
@@ -228,4 +229,5 @@ public class TechnicianController {
         technicianService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
 }
