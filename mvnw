@@ -17,7 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 # ----------------------------------------------------------------------------
+#  @BeforeEach
+#     void setup() {
+#         if (!userModelRepository.findByLogin("admin").isPresent()) {
+#         UserModel user = new UserModel();
+#         user.setLogin("admin");
+#         user.setPassword(new BCryptPasswordEncoder().encode("123456"));
+#         user.setRole(UserRole.ADMIN);
+#         userModelRepository.save(user);
+#         }
 
+#         AuthenticationDTO authenticationDTO = new AuthenticationDTO("admin","123456");
+#         ResponseEntity<LoginResponseDTO> response = testRestTemplate.postForEntity(
+#         "/auth/login", // altere se seu endpoint for diferente
+#         authenticationDTO,
+#         LoginResponseDTO.class
+#     );
+
+#     token = response.getBody().token();
+#     }
 # ----------------------------------------------------------------------------
 # Apache Maven Wrapper startup batch script, version 3.3.2
 #
