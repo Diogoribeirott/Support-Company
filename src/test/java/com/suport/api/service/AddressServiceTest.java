@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.suport.api.domain.Address;
 import com.suport.api.dtos.request.AddressRequestDTO;
+import com.suport.api.dtos.response.AddressResponseDTO;
 import com.suport.api.exceptions.BadRequestException;
 import com.suport.api.repository.AddressRepository;
 import com.suport.api.utils.AddressModelTests;
@@ -25,88 +26,88 @@ import com.suport.api.utils.AddressModelTests;
 @ExtendWith(SpringExtension.class)
 public class AddressServiceTest {
 
-    // @InjectMocks
-    // private AddressService addressService;
+    @InjectMocks
+    private AddressService addressService;
 
-    // @Mock
-    // private AddressRepository addressRepositoryMock;
+    @Mock
+    private AddressRepository addressRepositoryMock;
 
-    // @BeforeEach
-    // void setUp(){
-    //     Address addressValidWithId = AddressTests.createAddressValidWithId();
-    //     List<Address> listAddresses = List.of(addressValidWithId);
+    @BeforeEach
+    void setUp(){
+        Address addressValidWithId = AddressModelTests.createAddressValidWithId();
+        List<Address> listAddresses = List.of(addressValidWithId);
 
-    //     BDDMockito.when(addressRepositoryMock.findById(ArgumentMatchers.any(Long.class)))
-    //         .thenReturn(Optional.of(addressValidWithId));
+        BDDMockito.when(addressRepositoryMock.findById(ArgumentMatchers.any(Long.class)))
+            .thenReturn(Optional.of(addressValidWithId));
 
-    //     BDDMockito.when(addressRepositoryMock.findAll())
-    //         .thenReturn(listAddresses);
+        BDDMockito.when(addressRepositoryMock.findAll())
+            .thenReturn(listAddresses);
 
-    //     BDDMockito.when(addressRepositoryMock.save(ArgumentMatchers.any(Address.class)))
-    //         .thenReturn(addressValidWithId);
+        BDDMockito.when(addressRepositoryMock.save(ArgumentMatchers.any(Address.class)))
+            .thenReturn(addressValidWithId);
         
 
-    //     BDDMockito.doNothing().when(addressRepositoryMock).delete(addressValidWithId);
+        BDDMockito.doNothing().when(addressRepositoryMock).delete(addressValidWithId);
 
-    // }
-
-
-    // @Test
-    // @DisplayName("Delete by id: delete address by id when successful ")
-    // void delete_deleteAddressAndReturnNoContent_when_Sucessful() {
-
-    //     Assertions.assertThatCode(() -> addressService.deleteById(1l)).doesNotThrowAnyException();
-    // }
+    }
 
 
-    // @Test
-    // @DisplayName("Find by id: find address by id when successful ")
-    // void findById_ReturnAnAddress_when_sucessful() {
+    @Test
+    @DisplayName("Delete by id: delete address by id when successful ")
+    void delete_deleteAddressAndReturnNoContent_when_Sucessful() {
 
-    //     Address addressValidWithId = AddressTests.createAddressValidWithId();
-    //     Address address = addressService.findByIdOrThrowBadRequestException(5l);
+        Assertions.assertThatCode(() -> addressService.deleteById(1l)).doesNotThrowAnyException();
+    }
 
-    //     Assertions.assertThat(address).isNotNull();
-    //     Assertions.assertThat(address.getId()).isNotNull();
-    //     Assertions.assertThat(address.getStreet()).isEqualTo(addressValidWithId.getStreet());
-    //     Assertions.assertThat(address.getNumber()).isEqualTo(addressValidWithId.getNumber());
-    //     Assertions.assertThat(address.getCity()).isEqualTo(addressValidWithId.getCity());
-    //     Assertions.assertThat(address.getState()).isEqualTo(addressValidWithId.getState());
-    //     Assertions.assertThat(address.getPostalCode()).isEqualTo(addressValidWithId.getPostalCode());
-    //     Assertions.assertThat(address.getComplement()).isEqualTo(addressValidWithId.getComplement());
-    //     Assertions.assertThat(address.getDistrict()).isEqualTo(addressValidWithId.getDistrict());
 
-    // }
+    @Test
+    @DisplayName("Find by id: find address by id when successful ")
+    void findById_ReturnAnAddress_when_sucessful() {
 
-    // @Test
-    // @DisplayName("when id does not exist: throw bad request exception ")
-    // void findById_ReturnthrowBadRequestException_when_idNotExits() {
+        Address addressValidWithId = AddressModelTests.createAddressValidWithId();
+        Address address = addressService.findByIdOrThrowBadRequestException(5l);
 
-    //     BDDMockito.when(addressRepositoryMock.findById(ArgumentMatchers.any()))
-    //         .thenThrow(new BadRequestException("Address not found"));
+        Assertions.assertThat(address).isNotNull();
+        Assertions.assertThat(address.getId()).isNotNull();
+        Assertions.assertThat(address.getStreet()).isEqualTo(addressValidWithId.getStreet());
+        Assertions.assertThat(address.getNumber()).isEqualTo(addressValidWithId.getNumber());
+        Assertions.assertThat(address.getCity()).isEqualTo(addressValidWithId.getCity());
+        Assertions.assertThat(address.getState()).isEqualTo(addressValidWithId.getState());
+        Assertions.assertThat(address.getPostalCode()).isEqualTo(addressValidWithId.getPostalCode());
+        Assertions.assertThat(address.getComplement()).isEqualTo(addressValidWithId.getComplement());
+        Assertions.assertThat(address.getDistrict()).isEqualTo(addressValidWithId.getDistrict());
 
-    //         BadRequestException exception = assertThrows(BadRequestException.class, () ->addressService.findByIdOrThrowBadRequestException(5l));
+    }
 
-    //         Assertions.assertThat(exception.getMessage()).isEqualTo("Address not found");
+    @Test
+    @DisplayName("when id does not exist: throw bad request exception ")
+    void findById_ReturnthrowBadRequestException_when_idNotExits() {
 
-    // }
+        BDDMockito.when(addressRepositoryMock.findById(ArgumentMatchers.any()))
+            .thenThrow(new BadRequestException("Address not found"));
 
-    // @Test
-    // @DisplayName("findALL: return list of addreses")
-    // void findAll_ReturnListOfAddress_when_sucessful() {
+            BadRequestException exception = assertThrows(BadRequestException.class, () ->addressService.findByIdOrThrowBadRequestException(5l));
 
-    //     Address addressValidWithId = AddressTests.createAddressValidWithId();
-    //     List<Address> listAddresses = addressService.findAll();
+            Assertions.assertThat(exception.getMessage()).isEqualTo("Address not found");
 
-    //     Assertions.assertThat(listAddresses).isNotEmpty();
-    //     Assertions.assertThat(listAddresses.get(0)).isEqualTo(addressValidWithId);
-    // }
+    }
+
+    @Test
+    @DisplayName("findALL: return list of addreses")
+    void findAll_ReturnListOfAddress_when_sucessful() {
+
+        Address addressValidWithId = AddressModelTests.createAddressValidWithId();
+        List<AddressResponseDTO> listAddresses = addressService.findAll();
+
+        Assertions.assertThat(listAddresses).isNotEmpty();
+        Assertions.assertThat(listAddresses).contains(.addressValidWithId.getCity());
+    }
 
     // @Test
     // @DisplayName("Save: save addressDTO and return an address")
     // void save_returnAddress_when_sucessfull() {
 
-    //     AddressDTO addressDTOValid = AddressTests.createAddressDTOValid();
+    //     AddressDTO addressDTOValid = AddressModelTests.createAddressDTOValid();
 
     //    Address address = addressService.save(addressDTOValid);
 
@@ -118,7 +119,7 @@ public class AddressServiceTest {
     // @Test
     // @DisplayName("Update: update address with addressDTO and long id, return an address")
     // void update_returnAddress_when_sucessfull() {
-    //     AddressDTO addressDTOValid = AddressTests.createAddressDTOValid();
+    //     AddressDTO addressDTOValid = AddressModelTests.createAddressDTOValid();
     //     Address address = addressService.update(addressDTOValid, 5l);
 
     //     Assertions.assertThat(address).isNotNull();

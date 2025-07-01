@@ -11,13 +11,14 @@ import com.suport.api.enums.TaskStatus;
 
 public class TaskModelTests {
 
-    public static Task createtaskValid() {
+    public static Task taskValid() {
       return Task.builder()
+            .id(1l)
             .title("Login system error")
             .description("The Client reported that they are unable to access their account.")
             .status(TaskStatus.CLOSED)
             .priority(TaskPriority.HIGH)
-            .client(ClientModelTest.createClientValidWithAddress())
+            .client(ClientModelTest.clientValid())
             .technicians(new HashSet<>(Set.of(TechnicianModelTest.createtechnicianValid())))
             .build();
     }

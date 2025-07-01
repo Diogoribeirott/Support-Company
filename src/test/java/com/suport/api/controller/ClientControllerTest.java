@@ -53,23 +53,26 @@ public class ClientControllerTest {
         BDDMockito.doNothing().when(clientServiceMock).deleteById(ArgumentMatchers.any(Long.class));
     }
 
-    @Test
-    void test() {
-        // Placeholder para futuros testes
-    }
+    // ----------------------------------------
+    // DELETE
+    // ----------------------------------------
 
     @Test
     @DisplayName("Delete by id: delete client by id when successful")
-    void delete_deleteClientAndReturnNoContent_whenSuccessful() {
+    void deleteClient_ReturnsNoContent_whenSuccessful() {
         ResponseEntity<Void> response = clientController.deleteById(1L);
 
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
+    // ----------------------------------------
+    // FIND BY ID
+    // ----------------------------------------
+
     @Test
-    @DisplayName("Find by id: find client by id when successful")
-    void findById_ReturnClient_whenSuccessful() {
+    @DisplayName("Find by id: return client when successful")
+    void findById_ReturnsClient_whenSuccessful() {
         ResponseEntity<ClientResponseDTO> response = clientController.findById(1L);
 
         Assertions.assertThat(response).isNotNull();
@@ -99,9 +102,13 @@ public class ClientControllerTest {
         Assertions.assertThat(exception.getMessage()).isEqualTo("Address not found");
     }
 
+    // ----------------------------------------
+    // FIND ALL
+    // ----------------------------------------
+
     @Test
     @DisplayName("Find all: return list of clients")
-    void findAll_ReturnListOfClients_whenSuccessful() {
+    void findAll_ReturnsListOfClients_whenSuccessful() {
         ResponseEntity<List<ClientResponseDTO>> response = clientController.findAll();
 
         Assertions.assertThat(response).isNotNull();
@@ -117,9 +124,13 @@ public class ClientControllerTest {
         );
     }
 
+    // ----------------------------------------
+    // SAVE
+    // ----------------------------------------
+
     @Test
     @DisplayName("Save: save client and return ClientResponseDTO")
-    void save_ReturnClient_whenSuccessful() {
+    void save_ReturnsClient_whenSuccessful() {
         ResponseEntity<ClientResponseDTO> response = clientController.save(ClientModelTest.clientRequestCreateDTO());
 
         Assertions.assertThat(response).isNotNull();
@@ -136,9 +147,13 @@ public class ClientControllerTest {
         Assertions.assertThat(body.type()).isEqualTo(ClientType.INDIVIDUAL);
     }
 
+    // ----------------------------------------
+    // UPDATE
+    // ----------------------------------------
+
     @Test
     @DisplayName("Update: update client and return ClientResponseDTO")
-    void update_ReturnClient_whenSuccessful() {
+    void update_ReturnsClient_whenSuccessful() {
         ResponseEntity<ClientResponseDTO> response = clientController.update(ClientModelTest.clientRequestUpdateDTO(), 5L);
 
         Assertions.assertThat(response).isNotNull();
