@@ -75,14 +75,14 @@ public class AddressControllerTest {
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-         AddressResponseDTO addressResponseDTO = response.getBody();
+         AddressResponseDTO body = response.getBody();
 
-        Assertions.assertThat(addressResponseDTO).isNotNull();
-        Assertions.assertThat(addressResponseDTO.id()).isNotNull();
-        Assertions.assertThat(addressResponseDTO.street()).isEqualTo(addressValidWithId.getStreet());
-        Assertions.assertThat(addressResponseDTO.number()).isEqualTo(addressValidWithId.getNumber());
-        Assertions.assertThat(addressResponseDTO.city()).isEqualTo(addressValidWithId.getCity());
-        Assertions.assertThat(addressResponseDTO.state()).isEqualTo(addressValidWithId.getState());
+        Assertions.assertThat(body).isNotNull();
+        Assertions.assertThat(body.id()).isNotNull();
+        Assertions.assertThat(body.street()).isEqualTo(addressValidWithId.getStreet());
+        Assertions.assertThat(body.number()).isEqualTo(addressValidWithId.getNumber());
+        Assertions.assertThat(body.city()).isEqualTo(addressValidWithId.getCity());
+        Assertions.assertThat(body.state()).isEqualTo(addressValidWithId.getState());
 
     }
 
@@ -106,10 +106,10 @@ public class AddressControllerTest {
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         
-        List<AddressResponseDTO> addressResponseDTOList = response.getBody();
+        List<AddressResponseDTO> body = response.getBody();
 
-        Assertions.assertThat(addressResponseDTOList).isNotEmpty().isNotNull();
-       Assertions.assertThat(addressResponseDTOList)
+        Assertions.assertThat(body).isNotEmpty().isNotNull();
+       Assertions.assertThat(body)
           .anyMatch(dto -> 
               dto.street().equals(addressValidWithId.getStreet()) &&
               dto.city().equals(addressValidWithId.getCity()) &&
@@ -125,10 +125,10 @@ public class AddressControllerTest {
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-         AddressResponseDTO addressResponseDTO = response.getBody();
+         AddressResponseDTO body = response.getBody();
 
-        Assertions.assertThat(addressResponseDTO).isNotNull();
-        Assertions.assertThat(addressResponseDTO.id()).isNotNull();
+        Assertions.assertThat(body).isNotNull();
+        Assertions.assertThat(body.id()).isNotNull();
       
     }
 

@@ -18,6 +18,19 @@ public class AddressModelTests {
         .build();
 
     }
+
+    public static Address address(){
+        return Address.builder()
+        .street("Main Street")
+        .number("123")
+        .state("California")
+        .city("Los Angeles")
+        .postalCode("13025-200")
+        .complement("central")
+        .district("parker" )
+        .build();
+
+    }
     
     public static Address createAddressValidWithId(){
         return Address.builder()
@@ -68,4 +81,6 @@ public class AddressModelTests {
             "Los Angeles");
 
     }
+
+    
 }
