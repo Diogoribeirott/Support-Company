@@ -94,7 +94,7 @@ public class TechnicianControllerIT {
     }
 
     private Technician saveValidTechnician() {
-        return technicianRepository.save(TechnicianModelTest.technicianResquestDTO());
+        return technicianRepository.save(TechnicianModelTest.updateTechnicianValid());
     }
 
     // ========== Test Cases ==========
@@ -157,7 +157,7 @@ public class TechnicianControllerIT {
     @Test
     @DisplayName("Save: should return created technician")
     void save_ReturnsCreatedTechnician_WhenSuccessful() {
-        Technician technicianRequest = TechnicianModelTest.technicianResquestDTO();
+        Technician technicianRequest = TechnicianModelTest.technicianValid();
         String token = authenticateAndGetToken("testAdmin", "testPass123");
 
         ResponseEntity<TechnicianResponseDTO> response = testRestTemplate.exchange(

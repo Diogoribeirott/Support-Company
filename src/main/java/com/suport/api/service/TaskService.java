@@ -8,7 +8,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
 import com.suport.api.domain.Client;
 import com.suport.api.domain.Task;
 import com.suport.api.domain.Technician;

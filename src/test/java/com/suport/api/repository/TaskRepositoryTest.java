@@ -40,9 +40,9 @@ public class TaskRepositoryTest {
 
     @BeforeEach
     void setUp(){
-        taskValid = TaskModelTests.createtaskValid();
-        technician = technicianRepository.save(TechnicianModelTest.updateTechnicianValid());
-        client = clientRepository.save(ClientModelTest.updateClientValidWithAddress());
+        client = clientRepository.save(ClientModelTest.clientValid2());
+        technician = technicianRepository.save(TechnicianModelTest.technicianValid2());
+        taskValid = TaskModelTests.taskValid2(client,technician);
     }
 
     @Test
@@ -107,12 +107,10 @@ public class TaskRepositoryTest {
      @Test
     @DisplayName("FindAll: Returns a list of tasks when successful")
     void findAll_ReturnAllAddress_when_Successful(){
-        Client client = clientRepository.save(ClientModelTest.createClientValidWithAddress());
-        Technician technician = technicianRepository.save(TechnicianModelTest.createtechnicianValid());
+        Client client = clientRepository.save(ClientModelTest.clientValid2());
+        Technician technician = technicianRepository.save(TechnicianModelTest.technicianValid2());
 
-        Task task = TaskModelTests.createtaskValid();
-        task.setClient(client);
-        task.setTechnicians(Set.of(technician));
+        Task task = TaskModelTests.taskValid2(client,technician);
 
         taskRepository.save(task);
 

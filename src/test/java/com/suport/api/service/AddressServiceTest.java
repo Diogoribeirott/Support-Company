@@ -34,20 +34,17 @@ public class AddressServiceTest {
 
     @BeforeEach
     void setUp(){
-        Address addressValidWithId = AddressModelTests.createAddressValidWithId();
-        List<Address> listAddresses = List.of(addressValidWithId);
-
         BDDMockito.when(addressRepositoryMock.findById(ArgumentMatchers.any(Long.class)))
-            .thenReturn(Optional.of(addressValidWithId));
+            .thenReturn(Optional.of(AddressModelTests.createAddressValidWithId()));
 
         BDDMockito.when(addressRepositoryMock.findAll())
-            .thenReturn(listAddresses);
+            .thenReturn(List.of(AddressModelTests.createAddressValidWithId()));
 
         BDDMockito.when(addressRepositoryMock.save(ArgumentMatchers.any(Address.class)))
-            .thenReturn(addressValidWithId);
+            .thenReturn(AddressModelTests.createAddressValidWithId());
         
 
-        BDDMockito.doNothing().when(addressRepositoryMock).delete(addressValidWithId);
+        BDDMockito.doNothing().when(addressRepositoryMock).delete(AddressModelTests.createAddressValidWithId());
 
     }
 
@@ -100,31 +97,40 @@ public class AddressServiceTest {
         List<AddressResponseDTO> listAddresses = addressService.findAll();
 
         Assertions.assertThat(listAddresses).isNotEmpty();
-        Assertions.assertThat(listAddresses).contains(.addressValidWithId.getCity());
+        Assertions.assertThat(listAddresses).anyMatch(dto ->
+                dto.id().equals(addressValidWithId.getId()) &&
+                dto.number().equals(addressValidWithId.getNumber()) &&
+                dto.city().equals(addressValidWithId.getCity())
+        );
     }
 
-    // @Test
-    // @DisplayName("Save: save addressDTO and return an address")
-    // void save_returnAddress_when_sucessfull() {
+    @Test
+    @DisplayName("Save: save addressDTO and return an address")
+    void save_returnAddress_when_sucessfull() {
+    Address addressValidWithId = AddressModelTests.createAddressValidWithId();
+         AddressRequestDTO addressRequest = AddressModelTests.createAddressResquestDTOValid();
 
-    //     AddressDTO addressDTOValid = AddressModelTests.createAddressDTOValid();
+      AddressResponseDTO address = addressService.save(addressRequest);
 
-    //    Address address = addressService.save(addressDTOValid);
-
-    //     Assertions.assertThat(address).isNotNull();
-    //     Assertions.assertThat(address.getId()).isNotNull();
+       Assertions.assertThat(address).isNotNull();
+        Assertions.assertThat(address.id()).isNotNull();
+        Assertions.assertThat(address.street()).isEqualTo(addressValidWithId.getStreet());
+        Assertions.assertThat(address.number()).isEqualTo(addressValidWithId.getNumber());
+        Assertions.assertThat(address.city()).isEqualTo(addressValidWithId.getCity());
+        Assertions.assertThat(address.state()).isEqualTo(addressValidWithId.getState());
       
-    // }
+    }
 
-    // @Test
-    // @DisplayName("Update: update address with addressDTO and long id, return an address")
-    // void update_returnAddress_when_sucessfull() {
-    //     AddressDTO addressDTOValid = AddressModelTests.createAddressDTOValid();
-    //     Address address = addressService.update(addressDTOValid, 5l);
+    @Test
+    @DisplayName("Update: update address with addressDTO and long id, return an address")
+    void update_returnAddress_when_sucessfull() {
+         AddressRequestDTO addressRequest = AddressModelTests.createAddressResquestDTOValid();
 
-    //     Assertions.assertThat(address).isNotNull();
-    //     Assertions.assertThat(address.getId()).isNotNull();
+        AddressResponseDTO address = addressService.update(addressRequest, 5l);
 
-    // }
+        Assertions.assertThat(address).isNotNull();
+        Assertions.assertThat(address.id()).isNotNull();
+
+    }
 
 }

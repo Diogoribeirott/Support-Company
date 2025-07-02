@@ -15,7 +15,6 @@ import com.suport.api.domain.UserModel;
 import com.suport.api.exceptions.TokenGenerationException;
 import com.suport.api.exceptions.TokenValidationException;
 
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

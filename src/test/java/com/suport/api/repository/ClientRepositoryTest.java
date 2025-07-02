@@ -24,7 +24,7 @@ class ClientRepositoryTest {
 
     @BeforeEach
     void setUp(){
-      clientValid = ClientModelTest.createClientValidWithAddress();
+      clientValid = ClientModelTest.clientValid2();
     }
 
     @Test

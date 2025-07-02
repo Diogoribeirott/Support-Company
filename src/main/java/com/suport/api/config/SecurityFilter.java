@@ -1,7 +1,6 @@
 package com.suport.api.config;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.suport.api.domain.UserModel;
-import com.suport.api.exceptions.BadRequestException;
 import com.suport.api.exceptions.TokenValidationException;
 import com.suport.api.repository.UserModelRepository;
 

@@ -24,7 +24,7 @@ public class TechnicianRepositoryTest {
 
     @BeforeEach
     void setUp(){
-        technicianValid = TechnicianModelTest.createtechnicianValid();
+        technicianValid = TechnicianModelTest.technicianValid2();
     }
 
     @Test

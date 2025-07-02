@@ -1,12 +1,18 @@
 package com.suport.api.utils;
 
-import org.springframework.http.ResponseEntity;
-
 import com.suport.api.domain.Technician;
 import com.suport.api.dtos.request.TechnicianRequestDTO;
 import com.suport.api.dtos.response.TechnicianResponseDTO;
 
 public class TechnicianModelTest {
+
+  public static Technician technicianValid2(){
+      return Technician.builder()
+        .name("Draven")
+        .phone("(00) 0000-0000")
+        .build();
+       
+    }
 
     public static Technician technicianValid(){
       return Technician.builder()

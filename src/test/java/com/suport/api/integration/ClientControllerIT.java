@@ -103,7 +103,7 @@ public class ClientControllerIT {
     }
 
     private Client createClientInDatabase() {
-        return clientRepository.save(ClientModelTest.createClientValidWithAddress());
+        return clientRepository.save(ClientModelTest.clientValid2());
     }
 
     private <T> HttpEntity<T> jsonEntity(T body, String token) {
@@ -180,13 +180,13 @@ public class ClientControllerIT {
     @Test
     @DisplayName("Save: should return created client")
     void save_ReturnAddress_when_successful() {
-        ClientRequestCreateDTO clientRequestDTO = ClientModelTest.createClientResquestDTO();
+        ClientRequestCreateDTO clientRequestCreateDTO = ClientModelTest.clientRequestCreateDTO2();
         String token = authenticateAndGetToken("testAdmin", "testPass123");
 
         ResponseEntity<ClientResponseDTO> response = testRestTemplate.exchange(
             getBaseUrl(),
             HttpMethod.POST,
-            jsonEntity(clientRequestDTO, token),
+            jsonEntity(clientRequestCreateDTO, token),
             ClientResponseDTO.class
         );
 
@@ -195,8 +195,8 @@ public class ClientControllerIT {
         ClientResponseDTO client = response.getBody();
 
         Assertions.assertThat(client.id()).isNotNull();
-        Assertions.assertThat(client.name()).isEqualTo(clientRequestDTO.name());
-        Assertions.assertThat(client.email()).isEqualTo(clientRequestDTO.email());
+        Assertions.assertThat(client.name()).isEqualTo(clientRequestCreateDTO.name());
+        Assertions.assertThat(client.email()).isEqualTo(clientRequestCreateDTO.email());
     }
 
     @Test
@@ -210,7 +210,7 @@ public class ClientControllerIT {
         ResponseEntity<ClientResponseDTO> response = testRestTemplate.exchange(
             getBaseUrl() + "/" + savedClient.getId(),
             HttpMethod.PUT,
-            jsonEntity(savedClient, token),
+            jsonEntity(ClientModelTest.clientRequestUpdateDTO(), token),
             ClientResponseDTO.class
         );
 

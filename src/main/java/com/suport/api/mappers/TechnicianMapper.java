@@ -1,8 +1,5 @@
 package com.suport.api.mappers;
 
-import java.util.stream.Collectors;
-
-import com.suport.api.domain.Task;
 import com.suport.api.domain.Technician;
 import com.suport.api.dtos.response.TechnicianResponseDTO;
 

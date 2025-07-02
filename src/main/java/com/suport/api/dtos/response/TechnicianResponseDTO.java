@@ -1,6 +1,5 @@
 package com.suport.api.dtos.response;
 
-import java.util.Set;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

@@ -19,7 +19,7 @@ public class AddressModelTests {
 
     }
 
-    public static Address address(){
+    public static Address addressWithoutID(){
         return Address.builder()
         .street("Main Street")
         .number("123")

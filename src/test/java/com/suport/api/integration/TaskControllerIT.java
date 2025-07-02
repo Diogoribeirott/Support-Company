@@ -1,7 +1,6 @@
 package com.suport.api.integration;
 
 import java.util.List;
-import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +49,9 @@ public class TaskControllerIT {
     @BeforeEach
     void setUp() {
         userModelRepository.deleteAll();
+        taskRepository.deleteAll();
+        technicianRepository.deleteAll();
+            clientRepository.deleteAll();
 
         UserModel userAdmin = UserModel.builder()
             .login("testAdmin")
@@ -95,12 +97,10 @@ public class TaskControllerIT {
     }
 
     private Task createTaskWithClientAndTechnicianInDatabase() {
-        Client client = clientRepository.save(ClientModelTest.createClientValidWithAddress());
-        Technician technician = technicianRepository.save(TechnicianModelTest.createtechnicianValid());
+        Client client = clientRepository.save(ClientModelTest.clientValid2());
+        Technician technician = technicianRepository.save(TechnicianModelTest.technicianValid2());
 
-        Task task = TaskModelTests.createtaskValid();
-        task.setClient(client);
-        task.setTechnicians(Set.of(technician));
+        Task task = TaskModelTests.taskValid2(client,technician);
 
         return taskRepository.save(task);
     }
@@ -112,7 +112,9 @@ public class TaskControllerIT {
     @Test
     @DisplayName("FindAll: should return list of tasks")
     void findAll_ReturnListOfTasks_when_successful() {
-        Task savedTask = createTaskWithClientAndTechnicianInDatabase();
+       
+
+         Task savedTask = createTaskWithClientAndTechnicianInDatabase();
         String token = authenticateAndGetToken("testAdmin", "testPass123");
 
         ResponseEntity<List<TaskResponseDTO>> response = testRestTemplate.exchange(
@@ -171,8 +173,8 @@ public class TaskControllerIT {
     @DisplayName("Save: should create and return task")
     void save_ReturnTask_when_successful() {
         String token = authenticateAndGetToken("testAdmin", "testPass123");
-        Client client = clientRepository.save(ClientModelTest.createClientValidWithAddress());
-        Technician technician = technicianRepository.save(TechnicianModelTest.createtechnicianValid());
+        Client client = clientRepository.save(ClientModelTest.clientValid2());
+        Technician technician = technicianRepository.save(TechnicianModelTest.technicianValid2());
 
         TaskRequestCreateDTO taskDTO = TaskModelTests.taskRequestDTO(client.getId(), technician.getId());
 

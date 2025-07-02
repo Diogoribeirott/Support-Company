@@ -1,6 +1,5 @@
 package com.suport.api.dtos.response;
 
-import java.util.Set;
 
 import com.suport.api.enums.ClientType;
 
