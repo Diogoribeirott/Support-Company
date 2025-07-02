@@ -61,6 +61,9 @@ spring:
     activate:
       on-profile: prod
 
+  server:
+    port: 8080
+
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
